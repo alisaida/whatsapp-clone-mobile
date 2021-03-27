@@ -3,15 +3,21 @@ export type RootStackParamList = {
   NotFound: undefined;
 };
 
-export type BottomTabParamList = {
-  TabOne: undefined;
-  TabTwo: undefined;
+export type MainTabParamList = {
+  CallsTab: undefined;
+  ChatsTab: undefined;
+  ContactsTab: undefined;
 };
 
-export type TabOneParamList = {
-  TabOneScreen: undefined;
+export type CallsTabParamList = {
+  CallsTabScreen: undefined;
 };
 
-export type TabTwoParamList = {
-  TabTwoScreen: undefined;
+export type ChatsTabParamList = {
+  ChatsTabScreen: undefined;
 };
+
+export type ContactsTabParamList = {
+  ContactsTabScreen: undefined;
+};
+
