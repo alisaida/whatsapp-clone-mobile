@@ -1,15 +1,25 @@
 import * as React from 'react';
-import { StyleSheet } from 'react-native';
+import { FlatList, StyleSheet } from 'react-native';
+import ChatListItem from '../components/ChatListItem';
 
-import EditScreenInfo from '../components/EditScreenInfo';
 import { Text, View } from '../components/Themed';
+import FlatListItemSeparator from '../components/FlatListItemSeparator'
+
+import chatRooms from '../data/chatRooms';
+import { ChatRoom } from '../types';
 
 export default function TabTwoScreen() {
+
+
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Tab Two</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="/screens/TabTwoScreen.tsx" />
+      <FlatList
+        data={chatRooms}
+        style={styles.flatList}
+        renderItem={({ item }) => <ChatListItem chatRoom={item} />}
+        ItemSeparatorComponent={FlatListItemSeparator}
+      />
     </View>
   );
 }
@@ -23,6 +33,9 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: 'bold',
+  },
+  flatList: {
+    width: '100%'
   },
   separator: {
     marginVertical: 30,
