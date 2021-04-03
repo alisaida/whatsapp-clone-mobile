@@ -1,24 +1,34 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image } from 'react-native';
-import moment from 'moment';
+import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 import { ChatRoom } from '../types';
-import { Dimensions } from 'react-native';
+import Avatar from './Avatar';
+
+import { timeAgo } from '../DateUtil/DateUtil';
 
 export type ChatListItemProps = {
     chatRoom: ChatRoom;
 }
 
+
+
 const ChatListItem = (props: ChatListItemProps) => {
 
     const { chatRoom } = props;
 
-    const user = chatRoom.users[1];
+    const user = chatRoom.users[0];
+
+    const navigation = useNavigation();
+
+    const onPress = () => {
+        navigation.navigate("ChatRoomScreen", { id: chatRoom.id, name: user.name, imageUri: user.imageUri });
+    }
 
     return (
-        <View style={styles.container}>
+        <TouchableOpacity style={styles.container} onPress={onPress}>
             <View style={styles.leftContainer}>
-                <Image source={{ uri: user.imageUri }} style={styles.image} />
+                <Avatar uri={user.imageUri} size={50} />
                 <View style={styles.midContainer}>
                     <Text style={styles.recipientName}>{user.name}</Text>
                     <View style={styles.lastMessageContainer}>
@@ -26,8 +36,8 @@ const ChatListItem = (props: ChatListItemProps) => {
                     </View>
                 </View>
             </View>
-            <Text style={styles.time}>{moment(chatRoom.lastMessage.createdAt).fromNow()}</Text>
-        </View>
+            <Text style={styles.time}>{timeAgo(chatRoom.lastMessage.createdAt)}</Text>
+        </TouchableOpacity>
     )
 }
 
@@ -45,6 +55,7 @@ const styles = StyleSheet.create({
     },
     midContainer: {
         flexDirection: 'column',
+        marginLeft: 10
     },
     image: {
         marginRight: 10,

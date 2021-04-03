@@ -1,7 +1,7 @@
 import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import * as React from 'react';
-import { ColorSchemeName, View, StyleSheet } from 'react-native';
+import { ColorSchemeName, View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { Octicons, MaterialCommunityIcons } from '@expo/vector-icons';
 
 import NotFoundScreen from '../screens/NotFoundScreen';
@@ -10,6 +10,13 @@ import MainTabNavigator from './MainTabNavigator';
 import LinkingConfiguration from './LinkingConfiguration';
 
 import Colors from '../constants/Colors'
+import { Feather } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
+
+
+import ChatRoomScreen from '../screens/ChatRoomScreen';
+import Avatar from '../components/Avatar';
+
 
 // If you are not familiar with React Navigation, we recommend going through the
 // "Fundamentals" guide: https://reactnavigation.org/docs/getting-started
@@ -28,6 +35,7 @@ export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeNa
 const Stack = createStackNavigator<RootStackParamList>();
 
 function RootNavigator() {
+
   return (
     <Stack.Navigator screenOptions={{
       headerTitleAlign: 'left',
@@ -39,7 +47,9 @@ function RootNavigator() {
         shadowOpacity: 0,
         elevation: 0
       },
-      headerTintColor: Colors.light.background
+      headerTintColor: Colors.light.background,
+      // headerBackTitleVisible: false
+
     }}>
       <Stack.Screen
         name="Root"
@@ -54,6 +64,35 @@ function RootNavigator() {
           )
         }}
       />
+      <Stack.Screen
+        name="ChatRoomScreen" component={ChatRoomScreen}
+        options={({ route, navigation }) => ({
+          headerTitle: () => (
+            <View style={styles.chatRoomTitleContainer}>
+              <Text style={styles.chatRoomTitle}>{route.params.name}</Text>
+            </View>
+          ),
+          headerLeft: () => (
+            <View style={styles.chatRoomHeaderLeft}>
+              <TouchableOpacity onPress={
+                () => {
+                  navigation.navigate('ChatsTabScreen');
+                }
+              }>
+                <Feather name="chevron-left" size={34} color="white" />
+              </TouchableOpacity>
+              <Avatar uri={route.params.imageUri} size={40} />
+            </View>
+          ),
+          headerRight: () => (
+            <View style={styles.chatRoomRight}>
+              <Ionicons name="videocam-outline" size={24} color="white" style={{ marginHorizontal: 5 }} />
+              <Ionicons name="call-outline" size={24} color="white" style={{ marginHorizontal: 5 }} />
+            </View>
+          )
+        })}
+
+      />
       <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
     </Stack.Navigator>
   );
@@ -66,5 +105,28 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     width: 55,
     marginRight: 10
-  }
+  },
+  chatRoomHeaderLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10
+  },
+  chatRoomTitleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10
+  },
+  chatRoomTitle: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: '700',
+    marginLeft: 10
+  },
+  chatRoomRight: {
+    marginBottom: 10,
+    marginRight: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
 });

@@ -1,6 +1,7 @@
 export type RootStackParamList = {
   Root: undefined;
   NotFound: undefined;
+  ChatRoomScreen: undefined;
 };
 
 export type MainTabParamList = {
@@ -38,3 +39,8 @@ export type ChatRoom = {
   users: [User];
   lastMessage: Message;
 }
+
+// export type Avatar = {
+//   uri: String,
+//   size: number
+// }

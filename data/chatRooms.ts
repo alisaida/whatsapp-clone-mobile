@@ -12,7 +12,7 @@ export default [{
     lastMessage: {
         id: '3',
         content: 'Comming to Barca?',
-        createdAt: '2021-03-27T14:48:00.000Z',
+        createdAt: '2021-03-30T10:48:00.000Z',
     }
 }, {
     id: '2',
@@ -28,7 +28,7 @@ export default [{
     lastMessage: {
         id: '3',
         content: 'Good thing I\'ve left Real. I cant wait to do the same! Wales, Golf, then Real. In that order',
-        createdAt: '2021-03-27T14:48:00.000Z',
+        createdAt: '2021-03-19T14:48:00.000Z',
     }
 }
 ]

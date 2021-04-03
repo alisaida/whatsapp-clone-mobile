@@ -1,16 +1,21 @@
 import React from 'react'
-import { View, Text } from 'react-native'
+import { View, Text, StyleSheet } from 'react-native'
 
 const FlatListItemSeparator = () => {
     return (
-        <View
-            style={{
-                height: 1,
-                width: "100%",
-                backgroundColor: "#000",
-            }}
-        />
+        <View style={styles.line}></View>
     )
 }
 
 export default FlatListItemSeparator
+
+const styles = StyleSheet.create({
+
+    line: {
+        height: 1,
+        alignContent: 'center',
+        backgroundColor: "#dbdbdb",
+        marginLeft: 75,
+        marginRight: 15
+    }
+})
