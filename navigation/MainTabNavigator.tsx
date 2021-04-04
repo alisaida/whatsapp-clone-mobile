@@ -6,10 +6,11 @@ import * as React from 'react';
 
 import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
-import CallsTabScreen from '../screens/CallsTabScreen';
-import ChatsTabScreen from '../screens/ChatsTabScreen';
-import ContactsTabScreen from '../screens/ContactsTabScreen';
-import { MainTabParamList, CallsTabParamList, ChatsTabParamList, ContactsTabParamList } from '../types';
+import CallsTab from '../screens/CallsTab';
+import ChatsTab from '../screens/ChatsTab';
+import ContactsTab from '../screens/ContactsTab';
+import CameraTab from '../screens/CameraTab';
+import { MainTabParamList, CameraTabParamList, CallsTabParamList, ChatsTabParamList, ContactsTabParamList } from '../types';
 
 const MainTab = createMaterialTopTabNavigator<MainTabParamList>();
 
@@ -18,7 +19,7 @@ export default function MainTabNavigator() {
 
   return (
     <MainTab.Navigator
-      initialRouteName="Chats"
+      initialRouteName="ChatsTab"
       tabBarOptions={{
         activeTintColor: Colors[colorScheme].background,
         indicatorStyle: {
@@ -33,6 +34,7 @@ export default function MainTabNavigator() {
         }
       }}
     >
+      <MainTab.Screen name="Camera" component={CameraTabNavigator} />
       <MainTab.Screen name="Calls" component={CallsTabNavigator} />
       <MainTab.Screen name="Chats" component={ChatsTabNavigator} />
       <MainTab.Screen name="Contacts" component={ContactsTabNavigator} />
@@ -48,14 +50,31 @@ function TabBarIcon(props: { name: React.ComponentProps<typeof Ionicons>['name']
 
 // Each tab has its own navigation stack, you can read more about this pattern here:
 // https://reactnavigation.org/docs/tab-based-navigation#a-stack-navigator-for-each-tab
+const CameraTabStack = createStackNavigator<CameraTabParamList>();
+
+function CameraTabNavigator() {
+  return (
+    <CameraTabStack.Navigator>
+      <CameraTabStack.Screen
+        name="CameraTab"
+        component={CameraTab}
+        options={{
+          headerShown: false,
+          headerTitle: 'Tab One Title'
+        }}
+      />
+    </CameraTabStack.Navigator>
+  );
+}
+
 const CallsTabStack = createStackNavigator<CallsTabParamList>();
 
 function CallsTabNavigator() {
   return (
     <CallsTabStack.Navigator>
       <CallsTabStack.Screen
-        name="CallsTabScreen"
-        component={CallsTabScreen}
+        name="CallsTab"
+        component={CallsTab}
         options={{
           headerShown: false,
           headerTitle: 'Tab One Title'
@@ -71,8 +90,8 @@ function ChatsTabNavigator() {
   return (
     <ChatsTabStack.Navigator>
       <ChatsTabStack.Screen
-        name="ChatsTabScreen"
-        component={ChatsTabScreen}
+        name="ChatsTab"
+        component={ChatsTab}
         options={{
           headerShown: false,
           headerTitle: 'Tab Two Title'
@@ -88,8 +107,8 @@ function ContactsTabNavigator() {
   return (
     <ContactsTabStack.Navigator>
       <ContactsTabStack.Screen
-        name="ContactsTabScreen"
-        component={ContactsTabScreen}
+        name="ContactsTab"
+        component={ContactsTab}
         options={{
           headerShown: false,
           headerTitle: 'Tab Three Title'

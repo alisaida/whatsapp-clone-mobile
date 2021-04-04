@@ -5,21 +5,26 @@ export type RootStackParamList = {
 };
 
 export type MainTabParamList = {
+  CameraTab: undefined;
   CallsTab: undefined;
   ChatsTab: undefined;
   ContactsTab: undefined;
 };
 
+export type CameraTabParamList = {
+  CameraTab: undefined;
+};
+
 export type CallsTabParamList = {
-  CallsTabScreen: undefined;
+  CallsTab: undefined;
 };
 
 export type ChatsTabParamList = {
-  ChatsTabScreen: undefined;
+  ChatsTab: undefined;
 };
 
 export type ContactsTabParamList = {
-  ContactsTabScreen: undefined;
+  ContactsTab: undefined;
 };
 
 export type User = {

@@ -2,7 +2,7 @@ import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/
 import { createStackNavigator } from '@react-navigation/stack';
 import * as React from 'react';
 import { ColorSchemeName, View, StyleSheet, Text, TouchableOpacity } from 'react-native';
-import { Octicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Octicons, MaterialCommunityIcons, Feather, Ionicons } from '@expo/vector-icons';
 
 import NotFoundScreen from '../screens/NotFoundScreen';
 import { RootStackParamList } from '../types';
@@ -10,9 +10,6 @@ import MainTabNavigator from './MainTabNavigator';
 import LinkingConfiguration from './LinkingConfiguration';
 
 import Colors from '../constants/Colors'
-import { Feather } from '@expo/vector-icons';
-import { Ionicons } from '@expo/vector-icons';
-
 
 import ChatRoomScreen from '../screens/ChatRoomScreen';
 import Avatar from '../components/Avatar';
@@ -48,7 +45,6 @@ function RootNavigator() {
         elevation: 0
       },
       headerTintColor: Colors.light.background,
-      // headerBackTitleVisible: false
 
     }}>
       <Stack.Screen
@@ -76,7 +72,7 @@ function RootNavigator() {
             <View style={styles.chatRoomHeaderLeft}>
               <TouchableOpacity onPress={
                 () => {
-                  navigation.navigate('ChatsTabScreen');
+                  navigation.navigate('ChatsTab');
                 }
               }>
                 <Feather name="chevron-left" size={34} color="white" />
