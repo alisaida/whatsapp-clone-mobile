@@ -10,9 +10,6 @@ import { ChatRoom } from '../types';
 
 
 export default function TabTwoScreen() {
-
-
-
   return (
     <View style={styles.container}>
       <FlatList

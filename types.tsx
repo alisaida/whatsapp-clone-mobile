@@ -31,16 +31,12 @@ export type User = {
 export type Message = {
   id: String;
   content: String;
-  createdAt: number
+  createdAt: String;
+  user: User;
 }
 
 export type ChatRoom = {
   id: String;
-  users: [User];
+  users: User[];
   lastMessage: Message;
 }
-
-// export type Avatar = {
-//   uri: String,
-//   size: number
-// }

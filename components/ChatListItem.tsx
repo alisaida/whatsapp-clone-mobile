@@ -17,7 +17,7 @@ const ChatListItem = (props: ChatListItemProps) => {
 
     const { chatRoom } = props;
 
-    const user = chatRoom.users[0];
+    const user = chatRoom.users[1];
 
     const navigation = useNavigation();
 
