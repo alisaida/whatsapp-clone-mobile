@@ -1,20 +1,44 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, KeyboardAvoidingView } from 'react-native'
 
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 
+
+
 const ChatInput = () => {
+
+    const [message, setMessage] = useState('');
+
+    const handleSend = () => {
+        if (message) {
+            sendTextMessage();
+        } else {
+            sendVoiceMessage();
+        }
+    }
+
+    const sendTextMessage = () => {
+        console.warn(`sending: ${message}`);
+    }
+
+    const sendVoiceMessage = () => {
+        console.warn(`sending voice message`);
+    }
+
     return (
         <KeyboardAvoidingView behavior="padding" enabled keyboardVerticalOffset={65} style={styles.keyboardAvoider}>
             <View style={styles.bottomContainer}>
                 <View style={styles.chatBoxContainer}>
-                    <TextInput style={styles.inputStyle} placeholder="send message" />
+                    <TextInput style={styles.inputStyle} placeholder="send message" onChangeText={setMessage} />
                     <TouchableOpacity>
                         <Ionicons name='camera' color='grey' size={24} />
                     </TouchableOpacity>
                 </View>
-                <TouchableOpacity style={styles.voiceIcon}>
-                    <MaterialIcons name="keyboard-voice" size={27} color="white" />
+                <TouchableOpacity style={styles.voiceSendIcon} onPress={handleSend}>
+                    {
+                        !message ? <MaterialIcons name="keyboard-voice" size={27} color="white" /> :
+                            <MaterialIcons name="send" size={27} color="white" />
+                    }
                 </TouchableOpacity>
             </View>
         </KeyboardAvoidingView>
@@ -29,30 +53,34 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         alignItems: 'center',
         justifyContent: 'space-between',
-        marginHorizontal: 10,
+        marginHorizontal: 5,
         marginTop: 2
     },
     chatBoxContainer: {
         flex: 1,
         flexDirection: 'row',
-        borderWidth: 2,
-        borderColor: '#d9d9d9',
         borderRadius: 50,
         paddingHorizontal: 20,
         height: 45,
         alignItems: 'center',
-        backgroundColor: 'white'
+        backgroundColor: 'white',
+        shadowColor: 'grey',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.8,
+        shadowRadius: 1,
     },
     inputStyle: {
         flex: 1,
     },
-    voiceIcon: {
+    voiceSendIcon: {
         backgroundColor: '#128C7E',
-        padding: 5,
+        padding: 7,
         marginLeft: 5,
         borderRadius: 50,
-        borderWidth: 1,
-        borderColor: '#d9d9d9',
+        shadowColor: 'grey',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.8,
+        shadowRadius: 1,
     },
     keyboardAvoider: {
         flexShrink: 1,

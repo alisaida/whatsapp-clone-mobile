@@ -1,8 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-import moment from 'moment'
-
 export type dateProp = {
     date: String
 }
@@ -28,6 +26,10 @@ const styles = StyleSheet.create({
         paddingVertical: 5,
         paddingHorizontal: 10,
         margin: 5,
+        shadowColor: 'grey',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.8,
+        shadowRadius: 1,
 
     },
 })

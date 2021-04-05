@@ -4,7 +4,7 @@ import * as React from 'react';
 import { ColorSchemeName, View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { Octicons, MaterialCommunityIcons, Feather, Ionicons } from '@expo/vector-icons';
 
-import NotFoundScreen from '../screens/NotFoundScreen';
+import ContactsTab from '../screens/ContactsTab';
 import { RootStackParamList } from '../types';
 import MainTabNavigator from './MainTabNavigator';
 import LinkingConfiguration from './LinkingConfiguration';
@@ -89,7 +89,8 @@ function RootNavigator() {
         })}
 
       />
-      <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
+      <Stack.Screen name="Contacts" component={ContactsTab} />
+      {/* <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} /> */}
     </Stack.Navigator>
   );
 }

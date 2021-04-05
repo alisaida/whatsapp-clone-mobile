@@ -9,7 +9,7 @@ export type MessageProps = {
     shouldDisplayContacts: boolean
 }
 
-const ChatMessage = (props: MessageProps) => {
+const ChatMessageBubble = (props: MessageProps) => {
 
     const brightColor = () => {
         var hue = Math.floor(Math.random() * 360),
@@ -28,13 +28,13 @@ const ChatMessage = (props: MessageProps) => {
             <View style={[styles.messageBubble, isIncomming ? { backgroundColor: '#c5e3cd' } : { backgroundColor: 'white' }]}>
                 {shouldDisplayContacts && <Text style={{ fontWeight: '700', color: brightColor() }}>{message.user.name}</Text>}
                 <Text>{message.content}</Text>
-                <Text style={[styles.time, isIncomming ? { textAlign: 'right' } : { textAlign: 'left' }]}>{moment(message.createdAt).format('LT')}</Text>
+                <Text style={[styles.time, isIncomming ? { textAlign: 'right' } : { textAlign: 'left' }]}>{moment.utc(message.createdAt).format('LT')}</Text>
             </View>
         </View>
     )
 }
 
-export default ChatMessage
+export default ChatMessageBubble
 
 const styles = StyleSheet.create({
 
@@ -49,8 +49,10 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         marginHorizontal: 10,
         marginVertical: 5,
-        borderWidth: 1,
-        borderColor: '#d9d9d9',
+        shadowColor: 'grey',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.8,
+        shadowRadius: 1,
     },
     container: {
         width: '85%',

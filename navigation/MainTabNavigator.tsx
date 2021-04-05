@@ -12,6 +12,7 @@ import ContactsTab from '../screens/ContactsTab';
 import CameraTab from '../screens/CameraTab';
 import { MainTabParamList, CameraTabParamList, CallsTabParamList, ChatsTabParamList, ContactsTabParamList } from '../types';
 
+
 const MainTab = createMaterialTopTabNavigator<MainTabParamList>();
 
 export default function MainTabNavigator() {
@@ -19,25 +20,38 @@ export default function MainTabNavigator() {
 
   return (
     <MainTab.Navigator
-      initialRouteName="ChatsTab"
+      initialRouteName="Chats"
       tabBarOptions={{
         activeTintColor: Colors[colorScheme].background,
         indicatorStyle: {
           backgroundColor: Colors[colorScheme].background,
-          height: 4
+          height: 4,
         },
         style: {
           backgroundColor: Colors[colorScheme].tint,
         },
         labelStyle: {
           fontWeight: 'bold'
-        }
+        },
+        showIcon: true,
       }}
     >
-      <MainTab.Screen name="Camera" component={CameraTabNavigator} />
-      <MainTab.Screen name="Calls" component={CallsTabNavigator} />
+      <MainTab.Screen
+        name="Camera"
+        component={CameraTabNavigator}
+        options={{
+          tabBarIcon: ({ color }) => <Ionicons
+            name="camera"
+            size={24}
+            color={color}
+            style={[]}
+          />,
+          tabBarLabel: () => null,
+        }}
+      />
       <MainTab.Screen name="Chats" component={ChatsTabNavigator} />
-      <MainTab.Screen name="Contacts" component={ContactsTabNavigator} />
+      <MainTab.Screen name="Calls" component={CallsTabNavigator} />
+      {/* <MainTab.Screen name="Contacts" component={ContactsTabNavigator} /> */}
     </MainTab.Navigator>
   );
 }
@@ -60,7 +74,6 @@ function CameraTabNavigator() {
         component={CameraTab}
         options={{
           headerShown: false,
-          headerTitle: 'Tab One Title'
         }}
       />
     </CameraTabStack.Navigator>
@@ -77,7 +90,6 @@ function CallsTabNavigator() {
         component={CallsTab}
         options={{
           headerShown: false,
-          headerTitle: 'Tab One Title'
         }}
       />
     </CallsTabStack.Navigator>
@@ -94,7 +106,6 @@ function ChatsTabNavigator() {
         component={ChatsTab}
         options={{
           headerShown: false,
-          headerTitle: 'Tab Two Title'
         }}
       />
     </ChatsTabStack.Navigator>
@@ -111,10 +122,8 @@ function ContactsTabNavigator() {
         component={ContactsTab}
         options={{
           headerShown: false,
-          headerTitle: 'Tab Three Title'
         }}
       />
     </ContactsTabStack.Navigator>
   );
 }
-

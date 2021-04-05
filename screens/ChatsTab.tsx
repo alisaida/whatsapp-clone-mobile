@@ -6,7 +6,7 @@ import { Text, View } from '../components/Themed';
 import FlatListItemSeparator from '../components/FlatListItemSeparator'
 
 import chatRooms from '../data/chatRooms';
-import { ChatRoom } from '../types';
+import NewChatIcon from '../components/NewChatIcon';
 
 
 export default function TabTwoScreen() {
@@ -18,6 +18,8 @@ export default function TabTwoScreen() {
         renderItem={({ item }) => <ChatListItem chatRoom={item} />}
         ItemSeparatorComponent={FlatListItemSeparator}
       />
+
+      <NewChatIcon />
     </View>
   );
 }
@@ -39,5 +41,5 @@ const styles = StyleSheet.create({
     marginVertical: 30,
     height: 1,
     width: '80%',
-  },
+  }
 });

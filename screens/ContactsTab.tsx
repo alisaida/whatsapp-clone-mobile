@@ -1,15 +1,26 @@
 import * as React from 'react';
-import { StyleSheet } from 'react-native';
+import { FlatList, StyleSheet } from 'react-native';
+import ChatListItem from '../components/ChatListItem';
 
-import EditScreenInfo from '../components/EditScreenInfo';
 import { Text, View } from '../components/Themed';
+import FlatListItemSeparator from '../components/FlatListItemSeparator'
 
-export default function TabThreeScreen() {
+import chatRooms from '../data/chatRooms';
+import NewChatIcon from '../components/NewChatIcon';
+
+// duplicate the chatListItem and replace with contactListItem to render contact details
+
+export default function ContactsTab() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Tab Three</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="/screens/TabOneScreen.tsx" />
+      <FlatList
+        data={chatRooms}
+        style={styles.flatList}
+        renderItem={({ item }) => <ChatListItem chatRoom={item} />}
+        ItemSeparatorComponent={FlatListItemSeparator}
+      />
+
+      <NewChatIcon />
     </View>
   );
 }
@@ -24,9 +35,12 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
   },
+  flatList: {
+    width: '100%'
+  },
   separator: {
     marginVertical: 30,
     height: 1,
     width: '80%',
-  },
+  }
 });

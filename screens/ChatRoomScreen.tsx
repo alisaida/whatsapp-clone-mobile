@@ -6,17 +6,18 @@ import moment from 'moment';
 
 import chats from '../data/chats';
 import wallpaper from '../assets/images/wallpaper.png';
-import ChatMessage from '../components/ChatMessage';
+import ChatMessageBubble from '../components/ChatMessageBubble';
 import ChatMessageDateHeader from '../components/ChatMessageDateHeader';
 import ChatInput from '../components/ChatInput';
+
 
 
 const ChatRoom = () => {
 
     const route = useRoute();
 
+    // renders flatlist
     const renderItems = ({ item, index }) => {
-
         //only display contact name for chat groups consisting more than 3 users
         const shouldDisplayContacts = (chats.users.length > 2);
 
@@ -35,15 +36,13 @@ const ChatRoom = () => {
                 {
                     (index === 0 || (prevDate && !moment(current).isSame(prevDate, 'day'))) ? (<ChatMessageDateHeader date={currentDateFormated} />) : null
                 }
-                <ChatMessage message={item} shouldDisplayContacts={true} />
+                <ChatMessageBubble message={item} shouldDisplayContacts={true} />
             </View>
         )
     }
 
     return (
-
         <ImageBackground source={wallpaper} style={styles.background}>
-
             <FlatList
                 data={chats.messages}
                 renderItem={renderItems}
