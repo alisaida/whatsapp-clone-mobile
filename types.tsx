@@ -9,6 +9,9 @@ export type MainTabParamList = {
   CallsTab: undefined;
   ChatsTab: undefined;
   ContactsTab: undefined;
+  Chats: undefined;
+  Camera: undefined;
+  Calls: undefined;
 };
 
 export type CameraTabParamList = {
@@ -31,6 +34,7 @@ export type User = {
   id: String;
   name: String;
   imageUri: String;
+  status: String;
 }
 
 export type Message = {

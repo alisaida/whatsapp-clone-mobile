@@ -1,26 +1,21 @@
 import * as React from 'react';
 import { FlatList, StyleSheet } from 'react-native';
-import ChatListItem from '../components/ChatListItem';
+import ContactListItem from '../components/ContactListItem';
 
 import { Text, View } from '../components/Themed';
 import FlatListItemSeparator from '../components/FlatListItemSeparator'
 
-import chatRooms from '../data/chatRooms';
-import NewChatIcon from '../components/NewChatIcon';
-
-// duplicate the chatListItem and replace with contactListItem to render contact details
+import users from '../data/users';
 
 export default function ContactsTab() {
   return (
     <View style={styles.container}>
       <FlatList
-        data={chatRooms}
+        data={users}
         style={styles.flatList}
-        renderItem={({ item }) => <ChatListItem chatRoom={item} />}
+        renderItem={({ item }) => <ContactListItem user={item} />}
         ItemSeparatorComponent={FlatListItemSeparator}
       />
-
-      <NewChatIcon />
     </View>
   );
 }

@@ -20,6 +20,7 @@ export default function MainTabNavigator() {
 
   return (
     <MainTab.Navigator
+
       initialRouteName="Chats"
       tabBarOptions={{
         activeTintColor: Colors[colorScheme].background,
@@ -34,6 +35,8 @@ export default function MainTabNavigator() {
           fontWeight: 'bold'
         },
         showIcon: true,
+        // tabStyle: { width: 100 },
+        // showHeader: false
       }}
     >
       <MainTab.Screen
@@ -44,7 +47,6 @@ export default function MainTabNavigator() {
             name="camera"
             size={24}
             color={color}
-            style={[]}
           />,
           tabBarLabel: () => null,
         }}
@@ -74,7 +76,9 @@ function CameraTabNavigator() {
         component={CameraTab}
         options={{
           headerShown: false,
+
         }}
+
       />
     </CameraTabStack.Navigator>
   );

@@ -8,10 +8,12 @@ export default [
         id: '2',
         name: 'Ahmed',
         imageUri: 'https://lh3.googleusercontent.com/ogw/ADGmqu_oxIJCZvgMlubJIAFfDZixQW18hVQ40aslAxGv=s83-c-mo',
+        status: 'Hey there, I\'m using WhatsApp'
     }, {
         id: '3',
         name: 'Shukri',
-        imageUri: 'https://lh3.googleusercontent.com/ogw/ADGmqu82o3DzQCvGZbM0BGcyAtZN_krbjffps4bNS2mq=s83-c-mo'
+        imageUri: 'https://lh3.googleusercontent.com/ogw/ADGmqu82o3DzQCvGZbM0BGcyAtZN_krbjffps4bNS2mq=s83-c-mo',
+        status: 'Available'
     }, {
         id: '4',
         name: 'Dad',

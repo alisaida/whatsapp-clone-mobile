@@ -57,7 +57,9 @@ function RootNavigator() {
               <Octicons name="search" size={18} color="white" />
               <MaterialCommunityIcons name="dots-vertical" size={24} color="white" />
             </View>
-          )
+          ),
+          // headerShown: false,
+
         }}
       />
       <Stack.Screen

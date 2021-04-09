@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
 import { Camera } from 'expo-camera';
-import { Ionicons } from '@expo/vector-icons';
+import { AntDesign, Ionicons } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
-
 export default function CallsScreen() {
   const [hasPermission, setHasPermission] = useState(null);
+  const [cameraRef, setCameraRef] = useState(null)
   const [type, setType] = useState(Camera.Constants.Type.back);
+  const [image, setImage] = useState(null);
 
   useEffect(() => {
     (async () => {
@@ -21,32 +22,61 @@ export default function CallsScreen() {
   if (hasPermission === false) {
     return <Text>No access to camera</Text>;
   }
+
+
+  const takePicture = async () => {
+    if (cameraRef) {
+      let photo = await cameraRef.takePictureAsync();
+      setImage(photo.uri);
+    }
+  }
+
+  const exit = () => {
+    setImage(null)
+  }
+  /*
+        {media ?
+          <View>
+            {
+              image ? <Image source={{ isStatic: true, uri: image }} style={[{ width: '100%', height: '100%' }]} /> :
+                <Video source={{ isStatic: true, uri: video }} style={[{ width: '100%', height: '100%' }]} />
+            }
+            <TouchableOpacity style={styles.exitButton} onPress={exit}><AntDesign name="close" size={35} color="white" /></TouchableOpacity>
+          </View> :
+    */
+
   return (
     <View style={styles.container}>
-      <Camera style={styles.camera} type={type}>
-        <View style={styles.info}>
-          <View style={styles.bottomContainer}>
-            <View style={styles.buttons}>
-              <TouchableOpacity><FontAwesome name="photo" size={40} color="white" /></TouchableOpacity>
-              <View style={styles.captureContainer}>
-                <TouchableOpacity style={styles.capture}></TouchableOpacity>
+      {image ?
+        <View>
+          <Image source={{ isStatic: true, uri: image }} style={[{ width: '100%', height: '100%' }]} />
+          <TouchableOpacity style={styles.exitButton} onPress={exit}><AntDesign name="close" size={35} color="white" /></TouchableOpacity>
+        </View> :
 
+        <Camera style={styles.camera} type={type} ref={ref => { setCameraRef(ref); }}>
+          <View style={styles.info}>
+            <View style={styles.bottomContainer}>
+              <View style={styles.buttons}>
+                <TouchableOpacity><FontAwesome name="photo" size={40} color="white" /></TouchableOpacity>
+                <View style={styles.captureContainer}>
+                  <TouchableOpacity style={styles.capture} onPress={takePicture} ></TouchableOpacity>
+
+                </View>
+                <TouchableOpacity
+                  onPress={() => {
+                    setType(
+                      type === Camera.Constants.Type.back
+                        ? Camera.Constants.Type.front
+                        : Camera.Constants.Type.back
+                    );
+                  }}>
+                  <Ionicons name="ios-camera-reverse-outline" size={53} color="white" />
+                </TouchableOpacity>
               </View>
-              <TouchableOpacity
-                onPress={() => {
-                  setType(
-                    type === Camera.Constants.Type.back
-                      ? Camera.Constants.Type.front
-                      : Camera.Constants.Type.back
-                  );
-                }}>
-                <Ionicons name="ios-camera-reverse-outline" size={53} color="white" />
-              </TouchableOpacity>
             </View>
+            <Text style={styles.text}>Hold for video, tap for photo</Text>
           </View>
-          <Text style={styles.text}>Hold for video, tap for photo</Text>
-        </View>
-      </Camera>
+        </Camera>}
     </View>
   );
 }
@@ -91,5 +121,14 @@ const styles = StyleSheet.create({
     color: 'white',
     alignSelf: 'center',
     marginBottom: 25
+  },
+  exitButton: {
+    width: 60,
+    height: 60,
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    right: 5,
+    top: 5,
   }
 });
