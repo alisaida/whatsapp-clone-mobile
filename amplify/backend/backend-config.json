@@ -1,6 +1,6 @@
 {
   "auth": {
-    "whatsappclone7ce9095a": {
+    "whatsappclone47ef49f1": {
       "service": "Cognito",
       "providerPlugin": "awscloudformation",
       "dependsOn": [],

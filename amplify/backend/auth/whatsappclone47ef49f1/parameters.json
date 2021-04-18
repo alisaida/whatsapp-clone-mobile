@@ -1,8 +1,8 @@
 {
-    "identityPoolName": "whatsappclone7ce9095a_identitypool_7ce9095a",
+    "identityPoolName": "whatsappclone47ef49f1_identitypool_47ef49f1",
     "allowUnauthenticatedIdentities": false,
-    "resourceNameTruncated": "whatsa7ce9095a",
-    "userPoolName": "whatsappclone7ce9095a_userpool_7ce9095a",
+    "resourceNameTruncated": "whatsa47ef49f1",
+    "userPoolName": "whatsappclone47ef49f1_userpool_47ef49f1",
     "autoVerifiedAttributes": [
         "email"
     ],
@@ -28,10 +28,10 @@
     "userpoolClientReadAttributes": [
         "email"
     ],
-    "userpoolClientLambdaRole": "whatsa7ce9095a_userpoolclient_lambda_role",
+    "userpoolClientLambdaRole": "whatsa47ef49f1_userpoolclient_lambda_role",
     "userpoolClientSetAttributes": false,
-    "sharedId": "7ce9095a",
-    "resourceName": "whatsappclone7ce9095a",
+    "sharedId": "47ef49f1",
+    "resourceName": "whatsappclone47ef49f1",
     "authSelections": "identityPoolAndUserPool",
     "authRoleArn": {
         "Fn::GetAtt": [
@@ -47,19 +47,13 @@
     },
     "useDefault": "defaultSocial",
     "hostedUI": true,
-    "triggers": "{}",
-    "hostedUIDomainName": "whatsappclone7ce9095a-7ce9095a",
-    "authProvidersUserPool": [
-        "Google"
-    ],
-    "hostedUIProviderMeta": "[{\"ProviderName\":\"Google\",\"authorize_scopes\":\"openid email profile\",\"AttributeMapping\":{\"email\":\"email\",\"username\":\"sub\"}}]",
-    "oAuthMetadata": "{\"AllowedOAuthFlows\":[\"code\"],\"AllowedOAuthScopes\":[\"phone\",\"email\",\"openid\",\"profile\",\"aws.cognito.signin.user.admin\"],\"CallbackURLs\":[\"whatsapp://\"],\"LogoutURLs\":[\"whatsapp://\"]}",
     "userPoolGroupList": [],
     "serviceName": "Cognito",
     "usernameCaseSensitive": false,
-    "parentStack": {
-        "Ref": "AWS::StackId"
-    },
-    "permissions": [],
-    "dependsOn": []
+    "dependsOn": [],
+    "hostedUIDomainName": "whatsappclonef5be184a-f5be184a",
+    "authProvidersUserPool": [],
+    "hostedUIProviderMeta": "[]",
+    "authProviders": [],
+    "oAuthMetadata": "{\"AllowedOAuthFlows\":[\"code\"],\"AllowedOAuthScopes\":[\"phone\",\"email\",\"openid\",\"profile\",\"aws.cognito.signin.user.admin\"],\"CallbackURLs\":[\"exp://127.0.0.1:19000/\",\"exp://192.168.0.1:19000/\",\"whatsapp://\"],\"LogoutURLs\":[\"exp://127.0.0.1:19000/\",\"exp://192.168.0.1:19000/\"]}"
 }

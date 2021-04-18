@@ -1,37 +1,19 @@
 {
   "dev": {
     "awscloudformation": {
-      "AuthRoleName": "amplify-whatsappclone-dev-00221-authRole",
-      "UnauthRoleArn": "arn:aws:iam::310622051151:role/amplify-whatsappclone-dev-00221-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::310622051151:role/amplify-whatsappclone-dev-00221-authRole",
+      "AuthRoleName": "amplify-whatsappclone-dev-203105-authRole",
+      "UnauthRoleArn": "arn:aws:iam::310622051151:role/amplify-whatsappclone-dev-203105-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::310622051151:role/amplify-whatsappclone-dev-203105-authRole",
       "Region": "ap-southeast-2",
-      "DeploymentBucketName": "amplify-whatsappclone-dev-00221-deployment",
-      "UnauthRoleName": "amplify-whatsappclone-dev-00221-unauthRole",
-      "StackName": "amplify-whatsappclone-dev-00221",
-      "StackId": "arn:aws:cloudformation:ap-southeast-2:310622051151:stack/amplify-whatsappclone-dev-00221/6181e9b0-9a05-11eb-a143-028cc14f0746",
-      "AmplifyAppId": "d2wzdxyzdzzyrk"
+      "DeploymentBucketName": "amplify-whatsappclone-dev-203105-deployment",
+      "UnauthRoleName": "amplify-whatsappclone-dev-203105-unauthRole",
+      "StackName": "amplify-whatsappclone-dev-203105",
+      "StackId": "arn:aws:cloudformation:ap-southeast-2:310622051151:stack/amplify-whatsappclone-dev-203105/07aab910-9ab1-11eb-9fe5-0620c0caed30",
+      "AmplifyAppId": "dwq1mga8lcit4"
     },
     "categories": {
       "auth": {
-        "whatsappclone7ce9095a": {}
-      }
-    }
-  },
-  "develop": {
-    "awscloudformation": {
-      "AuthRoleName": "amplify-whatsappclone-develop-22609-authRole",
-      "UnauthRoleArn": "arn:aws:iam::310622051151:role/amplify-whatsappclone-develop-22609-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::310622051151:role/amplify-whatsappclone-develop-22609-authRole",
-      "Region": "ap-southeast-2",
-      "DeploymentBucketName": "amplify-whatsappclone-develop-22609-deployment",
-      "UnauthRoleName": "amplify-whatsappclone-develop-22609-unauthRole",
-      "StackName": "amplify-whatsappclone-develop-22609",
-      "StackId": "arn:aws:cloudformation:ap-southeast-2:310622051151:stack/amplify-whatsappclone-develop-22609/7802c740-9a19-11eb-bb7c-02545d650476",
-      "AmplifyAppId": "dp0jle8ggbh4s"
-    },
-    "categories": {
-      "auth": {
-        "whatsappclone7ce9095a": {}
+        "whatsappclone47ef49f1": {}
       }
     }
   }
