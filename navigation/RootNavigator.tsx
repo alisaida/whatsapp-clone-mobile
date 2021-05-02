@@ -8,9 +8,12 @@ import { RootStackParamList } from '../types';
 import { Octicons, MaterialCommunityIcons, Feather, Ionicons } from '@expo/vector-icons';
 import ChatRoomScreen from '../screens/ChatRoomScreen';
 import ContactsTab from '../screens/ContactsTab';
+import SettingsScreen from '../screens/SettingsScreen'
 import Avatar from '../components/Avatar';
 
 import { Auth } from 'aws-amplify';
+
+import SettingsMenu from '../components/SettingsMenu'
 
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -45,9 +48,7 @@ const RootNavigator = () => {
                     headerRight: () => (
                         <View style={styles.headerRight}>
                             <Octicons name="search" size={18} color="white" />
-                            <TouchableOpacity onPress={signOut}>
-                                <MaterialCommunityIcons name="dots-vertical" size={24} color="white" />
-                            </TouchableOpacity>
+                            <SettingsMenu />
                         </View>
                     ),
                     // headerShown: false,
@@ -84,6 +85,7 @@ const RootNavigator = () => {
 
             />
             <Stack.Screen name="Contacts" component={ContactsTab} />
+            <Stack.Screen name="Settings" component={SettingsScreen} />
             {/* <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} /> */}
         </Stack.Navigator>
     );
