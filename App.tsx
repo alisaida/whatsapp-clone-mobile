@@ -1,7 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState } from 'react';
 import { View, Text, Button, Platform, StyleSheet, SafeAreaView, Image, TouchableOpacity } from 'react-native';
-import Amplify, { Auth, Hub } from 'aws-amplify';
+import Amplify, { Auth, Hub, graphqlOperation, API } from 'aws-amplify';
 import * as WebBrowser from 'expo-web-browser'
 import awsconfig from './aws-exports';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -14,7 +14,11 @@ import Navigation from './navigation';
 import logo from './assets/images/logo.png';
 import googleLogo from './assets/images/googleLogo.png';
 import facebookLogo from './assets/images/facebookLogo.png';
+import emailLogo from './assets/images/emailLogo.png';
 import { color } from 'react-native-reanimated';
+
+import { getUser } from './src/graphql/queries'
+import { createUser } from './src/graphql/mutations';
 
 async function urlOpener(url, redirectUrl) {
   const { type, url: newUrl } = await WebBrowser.openAuthSessionAsync(
@@ -41,6 +45,8 @@ const App = (props) => {
   const { oAuthUser,
     facebookSignIn,
     googleSignIn,
+    cognitoHostedUI,
+    hostedUISignIn,
     signOut, } = props;
 
   const isLoadingComplete = useCachedResources();
@@ -49,11 +55,12 @@ const App = (props) => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
+
     Hub.listen('auth', ({ payload: { event, data } }) => {
       switch (event) {
         case 'signIn':
-        case 'cognitoHostedUI':
-          getUser().then(userData => setUser(userData));
+        case 'hostedUISignIn':
+          getAuthUser().then(userData => setUser(userData));
           break;
         case 'signOut':
           setUser(null);
@@ -65,13 +72,42 @@ const App = (props) => {
       }
     });
 
-    getUser().then(userData => setUser(userData));
+    getAuthUser().then(userData => setUser(userData));
   }, []);
 
-  function getUser() {
-    return Auth.currentAuthenticatedUser()
-      .then(userData => userData)
-      .catch(() => console.log('Not signed in'));
+  const getAuthUser = async () => {
+
+    //get Authenticated user from Auth
+    const userInfo = await Auth.currentAuthenticatedUser({ bypassCache: true });
+
+    if (userInfo) {
+      //get the user from backend with SUB from Auth
+      const userData = await API.graphql(graphqlOperation(getUser, { id: userInfo.attributes.sub }))
+
+      //if there is not user in the DB with the id, then create one
+      if (userData.data.getUser) {
+        return userInfo;
+      }
+
+      const newUser = {
+        id: userInfo.attributes.sub,
+        name: userInfo.attributes.given_name + ' ' + userInfo.attributes.family_name,
+        username: userInfo.attributes.email,
+        imageUri: userInfo.attributes.picture,
+        status: 'Hey there! I am using Whatsapp.'
+      };
+
+      //format username:
+      var username = newUser.username.substr(0, newUser.username.indexOf('@'));
+      newUser.username = '@' + username;
+
+      console.log(newUser);
+
+      //save to DB
+      await API.graphql(graphqlOperation(createUser, { input: newUser }));
+    }
+
+    return userInfo;
   }
 
   if (!isLoadingComplete) {
@@ -94,12 +130,18 @@ const App = (props) => {
                       <Text style={[styles.socialButtonText, { color: 'black' }]}>Sign in with Google</Text>
                     </View>
                   </TouchableOpacity>
-
                   <TouchableOpacity onPress={facebookSignIn} style={[styles.socialButton, { backgroundColor: '#227bef' }]}>
                     <Image source={facebookLogo} style={styles.socialButtonIcon} />
                     <View style={styles.separator}></View>
                     <View style={styles.buttonContainer}>
                       <Text style={[styles.socialButtonText, { color: 'white' }]}>Continue with Facebook</Text>
+                    </View>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={hostedUISignIn} style={[styles.socialButton, { backgroundColor: '#3a3a3a' }]}>
+                    <Image source={emailLogo} style={styles.socialButtonIcon} />
+                    <View style={styles.separator}></View>
+                    <View style={styles.buttonContainer}>
+                      <Text style={[styles.socialButtonText, { color: 'white' }]}>Sign up with Email</Text>
                     </View>
                   </TouchableOpacity>
                 </View>
