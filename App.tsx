@@ -32,6 +32,22 @@ async function urlOpener(url, redirectUrl) {
   }
 }
 
+const expoScheme = "whatsapp://"
+// Technically you need to pass the correct redirectUrl to the web browser.
+let redirectUrl = Linking.makeUrl();
+if (redirectUrl.startsWith('exp://1')) {
+  // handle simulator(localhost) and device(Lan)
+  redirectUrl = redirectUrl + '/--/';
+} else
+  if (redirectUrl === expoScheme) {
+    // dont do anything
+  } else {
+    // handle the expo client
+    redirectUrl = redirectUrl + '/'
+  }
+awsconfig.oauth.redirectSignIn = redirectUrl;
+awsconfig.oauth.redirectSignOut = redirectUrl;
+
 Amplify.configure({
   ...awsconfig,
   oauth: {
@@ -54,29 +70,33 @@ const App = (props) => {
 
   const [user, setUser] = useState(null);
 
+  // useEffect(() => {
+
+  //   Hub.listen('auth', ({ payload: { event, data } }) => {
+  //     switch (event) {
+  //       case 'signIn':
+  //       case 'hostedUISignIn':
+  //         getAuthUser().then(userData => setUser(userData));
+  //         break;
+  //       case 'signOut':
+  //         setUser(null);
+  //         break;
+  //       case 'signIn_failure':
+  //       case 'cognitoHostedUI_failure':
+  //         console.log('Sign in failure', data);
+  //         break;
+  //     }
+  //   });
+
+  //   getAuthUser().then(userData => setUser(userData));
+  // }, []);
+
   useEffect(() => {
+    console.log('Checking user data!');
+    checkAuthUser();
+  }, [oAuthUser])
 
-    Hub.listen('auth', ({ payload: { event, data } }) => {
-      switch (event) {
-        case 'signIn':
-        case 'hostedUISignIn':
-          getAuthUser().then(userData => setUser(userData));
-          break;
-        case 'signOut':
-          setUser(null);
-          break;
-        case 'signIn_failure':
-        case 'cognitoHostedUI_failure':
-          console.log('Sign in failure', data);
-          break;
-      }
-    });
-
-    getAuthUser().then(userData => setUser(userData));
-  }, []);
-
-  const getAuthUser = async () => {
-
+  const checkAuthUser = async () => {
     //get Authenticated user from Auth
     const userInfo = await Auth.currentAuthenticatedUser({ bypassCache: true });
 
@@ -88,6 +108,8 @@ const App = (props) => {
       if (userData.data.getUser) {
         return userInfo;
       }
+
+      console.log('New user detected! persisting user data');
 
       const newUser = {
         id: userInfo.attributes.sub,
@@ -116,7 +138,7 @@ const App = (props) => {
     return (
       <SafeAreaProvider>
         {
-          (user ? (<Navigation colorScheme={colorScheme} />)
+          (oAuthUser ? (<Navigation colorScheme={colorScheme} />)
             : (
               <SafeAreaView style={styles.background}>
                 <View>
