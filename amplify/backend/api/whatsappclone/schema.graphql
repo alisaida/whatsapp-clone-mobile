@@ -3,6 +3,42 @@ type User @model {
   username: String!
   name: String!
   imageUri: String
-  description: String
   status: String
+  chatRoomUsers: [ChatRoomUser] @connection(keyName:"byUser", fields: ["id"])
+}
+
+type ChatRoomUser @model
+@key(name:"byUser", fields:["userID","chatRoomID"])
+@key(name:"byChatRoom", fields:["chatRoomID","userID"])
+{
+  id: ID!
+  userID: ID!
+  chatRoomID: ID!
+  user: User @connection(fields: ["userID"])
+  chatRoom: ChatRoom @connection(fields: ["chatRoomID"])
+}
+
+type ChatRoom @model {
+  id: ID!
+  #list of users
+  chatRoomUser: [ChatRoomUser] @connection(keyName:"byChatRoom", fields: ["id"])
+  #list of messages
+  messages: [Message] @connection(keyName:"byChatRoom", fields: ["id"])
+  lastMessageID: ID
+  lastMessage: Message @connection(fields: ["lastMessageID"])
+}
+
+type Message @model 
+@key(
+  name:"byChatRoom", 
+  fields:["chatRoomID","createdAt"],
+  queryField:"messagesByChatRoom")
+{
+  id: ID!
+  message: String!
+  createdAt: String!
+  userID: ID!
+  chatRoomID: ID!
+  user: User @connection(fields: ["userID"])
+  chatRoom: ChatRoom @connection(fields: ["chatRoomID"])
 }

@@ -2,10 +2,16 @@ import React, { useState } from 'react'
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, KeyboardAvoidingView } from 'react-native'
 
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
+import { API, Auth, graphqlOperation } from 'aws-amplify';
+import { createMessage, updateChatRoom } from '../src/graphql/mutations';
 
+export type ChatInputProps = {
+    chatRoomID: String
+}
 
+const ChatInput = (props: ChatInputProps) => {
 
-const ChatInput = () => {
+    const { chatRoomID } = props;
 
     const [message, setMessage] = useState('');
 
@@ -17,8 +23,32 @@ const ChatInput = () => {
         }
     }
 
-    const sendTextMessage = () => {
-        console.warn(`sending: ${message}`);
+    const sendTextMessage = async () => {
+        try {
+            console.log(`sending message ...`);
+
+            const currentUser = await Auth.currentAuthenticatedUser();
+            const userID = currentUser.attributes.sub;
+
+            const lastMessage = await API.graphql(graphqlOperation(createMessage, {
+                input: {
+                    chatRoomID: chatRoomID,
+                    userID: userID,
+                    message: message
+                }
+            }));
+
+            const lastMessageID = lastMessage.data.createMessage.id;
+            await API.graphql(graphqlOperation(updateChatRoom, {
+                input: {
+                    id: chatRoomID,
+                    lastMessageID: lastMessageID
+                }
+            }));
+        } catch (error) {
+            console.log(error)
+        }
+
     }
 
     const sendVoiceMessage = () => {

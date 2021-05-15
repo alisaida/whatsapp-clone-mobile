@@ -1,34 +1,44 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
+
+import { API, Auth, graphqlOperation } from 'aws-amplify';
+import { getUser } from '../src/graphql/queries'
 
 import { Message } from '../types';
 import moment from 'moment'
 
 export type MessageProps = {
     message: Message,
-    shouldDisplayContacts: boolean
+    shouldDisplayContacts: boolean,
+    isIncomming: boolean,
+    contactNameColor: String
 }
 
 const ChatMessageBubble = (props: MessageProps) => {
 
-    const brightColor = () => {
-        var hue = Math.floor(Math.random() * 360),
-            saturation = Math.floor(Math.random() * 100),
-            color = "hsl(" + hue + ", " + saturation + "%, " + 50 + "%)"; //lightness is at Max
-        return color;
+    const { message, shouldDisplayContacts, isIncomming, contactNameColor } = props;
+
+    const [sender, setSender] = useState(null);
+
+    const fetchUserInfo = async () => {
+        const userData = await API.graphql(graphqlOperation(getUser, { id: message.userID }))
+        setSender(userData.data.getUser);
+    };
+
+    useEffect(() => {
+        fetchUserInfo();
+    }, [])
+
+    if (!sender) {
+        return null;
     }
 
-    const { message, shouldDisplayContacts } = props;
-
-    const isIncomming = message.user.id === '2' ? true : false;
-
     return (
-
         <View style={[styles.container, isIncomming ? { justifyContent: 'flex-end', alignSelf: 'flex-end' } : {}]}>
             <View style={[styles.messageBubble, isIncomming ? { backgroundColor: '#c5e3cd' } : { backgroundColor: 'white' }]}>
-                {shouldDisplayContacts && <Text style={{ fontWeight: '700', color: brightColor() }}>{message.user.name}</Text>}
-                <Text>{message.content}</Text>
-                <Text style={[styles.time, isIncomming ? { textAlign: 'right' } : { textAlign: 'left' }]}>{moment.utc(message.createdAt).format('LT')}</Text>
+                {shouldDisplayContacts && <Text style={{ fontWeight: '700', color: contactNameColor }}>{sender.username}</Text>}
+                <Text>{message.message}</Text>
+                <Text style={[styles.time, isIncomming ? { textAlign: 'right' } : { textAlign: 'left' }]}>{moment(message.createdAt).format('LT')}</Text>
             </View>
         </View>
     )

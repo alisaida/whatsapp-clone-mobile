@@ -1,28 +1,63 @@
-import * as React from 'react';
+import React, { useState, useEffect } from 'react';
 import { FlatList, StyleSheet } from 'react-native';
 import ChatListItem from '../components/ChatListItem';
 
 import { Text, View } from '../components/Themed';
 import FlatListItemSeparator from '../components/FlatListItemSeparator'
 
-import chatRooms from '../data/chatRooms';
+import chatRooms1 from '../data/chatRooms';
 import NewChatIcon from '../components/NewChatIcon';
 
+import { API, Auth, graphqlOperation } from 'aws-amplify';
+import { getUser } from '../src/graphql/queries'
+import { getUserChatRooms } from '../graphql/queries'
 
-export default function TabTwoScreen() {
+const ChatsTab = () => {
+
+  const [chatRooms, setChatRooms] = useState();
+
+  const fetchChatRooms = async () => {
+    try {
+      const currentUser = await Auth.currentAuthenticatedUser();
+
+      const chatRoomsData = await API.graphql(graphqlOperation(getUserChatRooms, { id: currentUser.attributes.sub }));
+
+      const chatRooms = chatRoomsData.data.getUser.chatRoomUsers.items
+
+      setChatRooms(chatRooms);
+
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  useEffect(() => {
+    fetchChatRooms();
+  }, []);
+
   return (
     <View style={styles.container}>
-      <FlatList
-        data={chatRooms}
-        style={styles.flatList}
-        renderItem={({ item }) => <ChatListItem chatRoom={item} />}
-        ItemSeparatorComponent={FlatListItemSeparator}
-      />
+      {
+        (chatRooms && chatRooms.length === 0) ?
+          <View>
+            <Text>no conversations</Text>
+          </View>
 
+          :
+          <FlatList
+            data={chatRooms}
+            style={styles.flatList}
+            keyExtractor={item => item.chatRoom.id}
+            renderItem={({ item }) => <ChatListItem chatRoom={item.chatRoom} />}
+            ItemSeparatorComponent={FlatListItemSeparator}
+          />
+      }
       <NewChatIcon />
     </View>
   );
 }
+
+export default ChatsTab;
 
 const styles = StyleSheet.create({
   container: {

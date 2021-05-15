@@ -39,13 +39,20 @@ export type User = {
 
 export type Message = {
   id: String;
-  content: String;
+  message: String;
   createdAt: String;
-  user: User;
+  userID: User;
+  chatRoomID: String
 }
 
 export type ChatRoom = {
   id: String;
   users: User[];
-  lastMessage: Message;
+  messages: Message[];
+}
+
+export type ChatRoomUser = {
+  id: String;
+  userID: String;
+  chatRoomID: String;
 }
