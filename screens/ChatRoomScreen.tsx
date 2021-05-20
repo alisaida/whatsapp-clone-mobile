@@ -3,6 +3,7 @@ import { SafeAreaView, StyleSheet, Text, View, ImageBackground, FlatList, TextIn
 import { useRoute } from '@react-navigation/native';
 import { Auth, API, graphqlOperation } from 'aws-amplify'
 import { getChatRoom, messagesByChatRoom } from '../src/graphql/queries'
+import { onCreateMessage } from '../src/graphql/subscriptions'
 import moment from 'moment';
 
 import chats from '../data/chats';
@@ -16,7 +17,7 @@ const ChatRoomScreen = () => {
 
     const route = useRoute();
 
-    const [messages, setMessages] = useState(null);
+    const [messages, setMessages] = useState([]);
     const [chatRoom, setChatRoom] = useState(null);
     const [currentUser, setCurrentUser] = useState(null);
     const [numUsers, setNumUsers] = useState(null)
@@ -45,16 +46,36 @@ const ChatRoomScreen = () => {
                 setNumUsers(chatRoom.chatRoomUser.items.length);
             }
 
-
         } catch (e) {
             console.log(e)
         }
     }
 
     useEffect(() => {
+        const subscription = API.graphql(graphqlOperation(onCreateMessage))
+            .subscribe({
+                next: (data) => {
+                    const subscriptionData = data.value.data;
+                    const newMessageData = subscriptionData.onCreateMessage;
+                    //check if message was intended for this chatRoom
+                    if (newMessageData.chatRoomID != route.params.id) {
+                        return;
+                    }
+
+                    setMessages([...messages, newMessageData]);
+                }
+            });
+
+        return () => subscription.unsubscribe();
+    }, [messages]);
+
+    useEffect(() => {
         fetchMessages();
+    }, []);
+
+    useEffect(() => {
         fetchCurrentUser();
-    }, [])
+    }, []);
 
     const brightColor = () => {
         var hue = Math.floor(Math.random() * 360),

@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { Auth } from 'aws-amplify';
+import { API, Auth, graphqlOperation } from 'aws-amplify';
 import { ChatRoom } from '../types';
 import Avatar from './Avatar';
+
+import { getChatRoom } from '../src/graphql/queries'
+import { onCreateMessage } from '../src/graphql/subscriptions'
 
 import { timeAgo } from '../DateUtil/DateUtil';
 
@@ -40,9 +43,42 @@ const ChatListItem = (props: ChatListItemProps) => {
             }
         }
         getRecipient();
+    }, []);
+
+    useEffect(() => {
+        fetchLastMessage();
+    }, []);
+
+    const fetchLastMessage = async () => {
+        try {
+            const chatRoomData = await API.graphql(graphqlOperation(getChatRoom, { id: chatRoom.id }));
+            const lastMessage = chatRoomData.data.getChatRoom.lastMessage;
+            setLastMessage(lastMessage);
+
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+
+    useEffect(() => {
+        const subscription = API.graphql(graphqlOperation(onCreateMessage)).
+            subscribe({
+                next: (data) => {
+                    const subscriptionData = data.value.data;
+                    const lastMessaegeData = subscriptionData.onCreateMessage;
+
+                    //check if message was intended for this chatRoom
+                    if (lastMessaegeData.chatRoomID != chatRoom.id) {
+                        return;
+                    }
+
+                    setLastMessage(lastMessaegeData);
+
+                    return () => subscription.unsubscribe();
+                }
+            })
     }, [])
-
-
 
     const onPress = () => {
         navigation.navigate("ChatRoomScreen", { id: chatRoom.id, name: recipient.name, imageUri: recipient.imageUri });
@@ -52,11 +88,13 @@ const ChatListItem = (props: ChatListItemProps) => {
         return null;
     }
 
-
+    if (!lastMessage) {
+        return null;
+    }
 
     const lastMessageDisplay = () => {
-        return (chatRoom.lastMessage && chatRoom.lastMessage.userID === currentUser.attributes.sub)
-            ? 'You: ' + chatRoom.lastMessage.message : chatRoom.lastMessage.message
+        return (lastMessage && lastMessage.userID === currentUser.attributes.sub)
+            ? 'You: ' + lastMessage.message : lastMessage.message
     }
 
     //lastMessage.user.id === userID
@@ -75,7 +113,7 @@ const ChatListItem = (props: ChatListItemProps) => {
                     </View>
                 </View>
             </View>
-            <Text style={styles.time}>{timeAgo(chatRoom.lastMessage.createdAt)}</Text>
+            <Text style={styles.time}>{timeAgo(lastMessage.createdAt)}</Text>
 
         </TouchableOpacity>
     )

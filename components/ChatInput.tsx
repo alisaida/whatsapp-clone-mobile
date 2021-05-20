@@ -25,8 +25,6 @@ const ChatInput = (props: ChatInputProps) => {
 
     const sendTextMessage = async () => {
         try {
-            console.log(`sending message ...`);
-
             const currentUser = await Auth.currentAuthenticatedUser();
             const userID = currentUser.attributes.sub;
 
@@ -59,7 +57,7 @@ const ChatInput = (props: ChatInputProps) => {
         <KeyboardAvoidingView behavior="padding" enabled keyboardVerticalOffset={65} style={styles.keyboardAvoider}>
             <View style={styles.bottomContainer}>
                 <View style={styles.chatBoxContainer}>
-                    <TextInput style={styles.inputStyle} placeholder="send message" onChangeText={setMessage} />
+                    <TextInput clearButtonMode="always" style={styles.inputStyle} placeholder="send message" onChangeText={setMessage} />
                     <TouchableOpacity>
                         <Ionicons name='camera' color='grey' size={24} />
                     </TouchableOpacity>
