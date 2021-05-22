@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, KeyboardAvoidingView } from 'react-native'
-
+import CameraModal from './CameraModal';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { API, Auth, graphqlOperation } from 'aws-amplify';
 import { createMessage, updateChatRoom } from '../src/graphql/mutations';
@@ -14,6 +14,7 @@ const ChatInput = (props: ChatInputProps) => {
     const { chatRoomID } = props;
 
     const [message, setMessage] = useState('');
+    const [modalVisible, setModalVisible] = useState(false);
 
     const handleSend = () => {
         if (message) {
@@ -53,12 +54,17 @@ const ChatInput = (props: ChatInputProps) => {
         console.warn(`sending voice message`);
     }
 
+    const openCamera = () => {
+        setModalVisible(!modalVisible);
+    }
+
     return (
         <KeyboardAvoidingView behavior="padding" enabled keyboardVerticalOffset={65} style={styles.keyboardAvoider}>
+
             <View style={styles.bottomContainer}>
                 <View style={styles.chatBoxContainer}>
                     <TextInput clearButtonMode="always" style={styles.inputStyle} placeholder="send message" onChangeText={setMessage} />
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={openCamera}>
                         <Ionicons name='camera' color='grey' size={24} />
                     </TouchableOpacity>
                 </View>
@@ -69,6 +75,12 @@ const ChatInput = (props: ChatInputProps) => {
                     }
                 </TouchableOpacity>
             </View>
+            {modalVisible &&
+                <CameraModal
+                    modalVisible={modalVisible}
+                    onChangeTerm={(newState) => { setModalVisible(newState); }}
+                />
+            }
         </KeyboardAvoidingView>
     )
 }

@@ -5,7 +5,7 @@ import { Auth, API, graphqlOperation } from 'aws-amplify'
 import { getChatRoom, messagesByChatRoom } from '../src/graphql/queries'
 import { onCreateMessage } from '../src/graphql/subscriptions'
 import moment from 'moment';
-
+import CameraModal from '../components/CameraModal';
 import chats from '../data/chats';
 import wallpaper from '../assets/images/wallpaper.png';
 import ChatMessageBubble from '../components/ChatMessageBubble';
