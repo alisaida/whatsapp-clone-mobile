@@ -39,6 +39,7 @@ type Message @model
   createdAt: String!
   userID: ID!
   chatRoomID: ID!
+  imageUri: String
   user: User @connection(fields: ["userID"])
   chatRoom: ChatRoom @connection(fields: ["chatRoomID"])
 }

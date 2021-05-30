@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, KeyboardAvoidingView } from 'react-native'
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, KeyboardAvoidingView, ScrollView } from 'react-native'
 import CameraModal from './CameraModal';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { API, Auth, graphqlOperation } from 'aws-amplify';
@@ -37,6 +37,8 @@ const ChatInput = (props: ChatInputProps) => {
                 }
             }));
 
+            // console.log(lastMessage)
+
             const lastMessageID = lastMessage.data.createMessage.id;
             await API.graphql(graphqlOperation(updateChatRoom, {
                 input: {
@@ -50,7 +52,7 @@ const ChatInput = (props: ChatInputProps) => {
 
     }
 
-    const sendVoiceMessage = () => {
+    const sendVoiceMessage = async () => {
         console.warn(`sending voice message`);
     }
 
@@ -63,7 +65,9 @@ const ChatInput = (props: ChatInputProps) => {
 
             <View style={styles.bottomContainer}>
                 <View style={styles.chatBoxContainer}>
-                    <TextInput clearButtonMode="always" style={styles.inputStyle} placeholder="send message" onChangeText={setMessage} />
+                    <ScrollView keyboardDismissMode='on-drag'>
+                        <TextInput clearButtonMode="always" style={styles.inputStyle} placeholder="send message" onChangeText={setMessage} />
+                    </ScrollView>
                     <TouchableOpacity onPress={openCamera}>
                         <Ionicons name='camera' color='grey' size={24} />
                     </TouchableOpacity>
@@ -75,13 +79,15 @@ const ChatInput = (props: ChatInputProps) => {
                     }
                 </TouchableOpacity>
             </View>
-            {modalVisible &&
+            {
+                modalVisible &&
                 <CameraModal
+                    chatRoomID={chatRoomID}
                     modalVisible={modalVisible}
                     onChangeTerm={(newState) => { setModalVisible(newState); }}
                 />
             }
-        </KeyboardAvoidingView>
+        </KeyboardAvoidingView >
     )
 }
 

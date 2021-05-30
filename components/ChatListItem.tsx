@@ -53,13 +53,13 @@ const ChatListItem = (props: ChatListItemProps) => {
         try {
             const chatRoomData = await API.graphql(graphqlOperation(getChatRoom, { id: chatRoom.id }));
             const lastMessage = chatRoomData.data.getChatRoom.lastMessage;
+
             setLastMessage(lastMessage);
 
         } catch (error) {
             console.log(error);
         }
     };
-
 
     useEffect(() => {
         const subscription = API.graphql(graphqlOperation(onCreateMessage)).

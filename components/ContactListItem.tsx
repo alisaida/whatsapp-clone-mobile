@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
@@ -14,26 +14,26 @@ export type ContactListItemProps = {
     user: User;
 }
 
-
-
 const ContactListItem = (props: ContactListItemProps) => {
 
     const { user } = props;
     const navigation = useNavigation();
 
-    const onPress = () => {
-        const chatRoom = prepareChatRoom();
-        if (!chatRoom) {
-            console.warn('Chatroom creation failed');
-            return;
-        }
-        navigation.navigate("ChatRoomScreen", { id: user.id, name: user.name, imageUri: user.imageUri });
+
+
+    //find user chats 
+    const findExistingChats = (userChats) => {
+
+        let existingChat = userChats.find(chats => chats.chatRoom.chatRoomUser.items[0].user.id === user.id);
+        if (!existingChat)
+            existingChat = userChats.find(chats => chats.chatRoom.chatRoomUser.items[1].user.id === user.id);
+
+        return existingChat;
     }
 
-    const prepareChatRoom = async () => {
-        //setup chatroom, add user-prop and current auth user
+    const onPress = async () => {
         try {
-
+            //setup chatroom, add user-prop and current auth user
             const currentUser = await Auth.currentAuthenticatedUser();
 
             //all chatRoom for current authenticated user
@@ -41,45 +41,49 @@ const ContactListItem = (props: ContactListItemProps) => {
             const userChats = currentUserChats.data.getUser.chatRoomUsers.items;
 
             //find chatRoom between current and selected users
-            const existingChat = userChats.find(chats => chats.chatRoom.chatRoomUser.items[0].user.id === user.id)
+            let existingChat = userChats.find(chats => chats.chatRoom.chatRoomUser.items[0].user.id === user.id);
+            if (!existingChat) {
+                existingChat = userChats.find(chats => chats.chatRoom.chatRoomUser.items[1].user.id === user.id);
+            }
 
-            //if chat room between current user and selected user is found return chatRoom
+            let chatRoom = null;
+
+            //if chat room between current user and selected user is found
             if (existingChat && existingChat.chatRoom) {
-                return existingChat.chatRoom;
+                chatRoom = existingChat.chatRoom;
+            } else {
+
+                //otherwise create a new chatroom between current authenticated and selected user
+                console.log('no conversation exists between current and selected users');
+                console.log('initialising a new chatroom between current and selected users');
+                const newChatRoomData = await API.graphql(graphqlOperation(createChatRoom, { input: {} }));
+
+                if (!newChatRoomData) {
+                    console.log('chatroom creation failed!');
+                    return null;
+                }
+
+                chatRoom = newChatRoomData.data.createChatRoom;
+
+                await API.graphql(graphqlOperation(createChatRoomUser, {
+                    input: {
+                        chatRoomID: chatRoom.id,
+                        userID: user.id
+                    }
+                }));
+
+                await API.graphql(graphqlOperation(createChatRoomUser, {
+                    input: {
+                        chatRoomID: chatRoom.id,
+                        userID: currentUser.attributes.sub
+                    }
+                }));
             }
 
-            //otherwise create a new chatroom between current authenticated and selected user
-            console.log('no conversation exists between current and selected users');
-            console.log('initialising a new chatroom between current and selected users');
-            const newChatRoomData = await API.graphql(graphqlOperation(createChatRoom, { input: {} }));
-
-            if (!newChatRoomData) {
-                console.log('chatroom creation failed!');
-                return null;
-            }
-
-            const newChatRoom = newChatRoomData.data.createChatRoom;
-
-            await API.graphql(graphqlOperation(createChatRoomUser, {
-                input: {
-                    chatRoomID: newChatRoom.id,
-                    userID: user.id
-                }
-            }));
-
-            await API.graphql(graphqlOperation(createChatRoomUser, {
-                input: {
-                    chatRoomID: newChatRoom.id,
-                    userID: currentUser.attributes.sub
-                }
-            }));
-
-            return newChatRoom;
-        } catch (err) {
-            console.log(err);
+            navigation.navigate("ChatRoomScreen", { id: chatRoom.id, name: user.name, imageUri: user.imageUri });
+        } catch (e) {
+            console.log(e);
         }
-
-
     }
 
     return (

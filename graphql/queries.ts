@@ -28,6 +28,7 @@ export const getUserChatRooms = /* GraphQL */ `
                 message
                 createdAt
                 userID
+                imageUri
                 chatRoomID
                 updatedAt
               }
@@ -69,4 +70,19 @@ export const listUsers = /* GraphQL */ `
       nextToken
     }
   }
+`;
+
+//list user not including id - used to retrieve other contents
+export const listChatRoomUsers = /* GraphQL */ `
+  query ListChatRoomUsers($id: ID!) {
+    getChatRoom(id: $id) {
+    chatRoomUser {
+      items {
+        user {
+          id
+        }
+      }
+    }
+  }
+}
 `;

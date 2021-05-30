@@ -81,6 +81,7 @@ export const getChatRoomUser = /* GraphQL */ `
           createdAt
           userID
           chatRoomID
+          imageUri
           updatedAt
         }
         createdAt
@@ -145,6 +146,7 @@ export const getChatRoom = /* GraphQL */ `
           createdAt
           userID
           chatRoomID
+          imageUri
           updatedAt
         }
         nextToken
@@ -156,6 +158,7 @@ export const getChatRoom = /* GraphQL */ `
         createdAt
         userID
         chatRoomID
+        imageUri
         user {
           id
           username
@@ -200,6 +203,7 @@ export const listChatRooms = /* GraphQL */ `
           createdAt
           userID
           chatRoomID
+          imageUri
           updatedAt
         }
         createdAt
@@ -217,6 +221,7 @@ export const getMessage = /* GraphQL */ `
       createdAt
       userID
       chatRoomID
+      imageUri
       user {
         id
         username
@@ -244,6 +249,7 @@ export const getMessage = /* GraphQL */ `
           createdAt
           userID
           chatRoomID
+          imageUri
           updatedAt
         }
         createdAt
@@ -266,6 +272,7 @@ export const listMessages = /* GraphQL */ `
         createdAt
         userID
         chatRoomID
+        imageUri
         user {
           id
           username
@@ -310,6 +317,7 @@ export const messagesByChatRoom = /* GraphQL */ `
         createdAt
         userID
         chatRoomID
+        imageUri
         user {
           id
           username

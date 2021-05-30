@@ -37,7 +37,8 @@ const ChatRoomScreen = () => {
             const messageData = await API.graphql(graphqlOperation(messagesByChatRoom,
                 {
                     chatRoomID: route.params.id,
-                    sortDirection: 'ASC'
+                    sortDirection: 'DESC',
+                    limit: 10
                 }
             ));
             setMessages(messageData.data.messagesByChatRoom.items);
@@ -62,7 +63,7 @@ const ChatRoomScreen = () => {
                         return;
                     }
 
-                    setMessages([...messages, newMessageData]);
+                    setMessages([newMessageData, ...messages]);
                 }
             });
 
@@ -121,7 +122,7 @@ const ChatRoomScreen = () => {
                 keyExtractor={item => item.id}
                 style={{ flex: 1 }}
 
-                inverted={false} //break auto scroll to top, not sure why
+                inverted={true} //break auto scroll to top, not sure why
             />
             <ChatInput chatRoomID={route.params.id} />
         </ImageBackground>

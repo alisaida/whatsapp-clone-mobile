@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, View, Image } from 'react-native'
 
-import { API, Auth, graphqlOperation } from 'aws-amplify';
+import { API, Auth, Storage, graphqlOperation } from 'aws-amplify';
 import { getUser } from '../src/graphql/queries'
 
 import { Message } from '../types';
-import moment from 'moment'
+import moment from 'moment';
+import { S3Image } from 'aws-amplify-react-native';
 
 export type MessageProps = {
     message: Message,
@@ -19,6 +20,7 @@ const ChatMessageBubble = (props: MessageProps) => {
     const { message, shouldDisplayContacts, isIncomming, contactNameColor } = props;
 
     const [sender, setSender] = useState(null);
+    const [imageUri, setImageUri] = useState(null);
 
     const fetchUserInfo = async () => {
         const userData = await API.graphql(graphqlOperation(getUser, { id: message.userID }))
@@ -27,16 +29,39 @@ const ChatMessageBubble = (props: MessageProps) => {
 
     useEffect(() => {
         fetchUserInfo();
-    }, [])
+    }, []);
+
+    useEffect(() => {
+        return () => {
+            // console.log("cleaned up");
+        };
+    }, []);
 
     if (!sender) {
         return null;
+    }
+
+    const getUri = async () => {
+        const signedURL = await Storage.get(message.imageUri, {
+            level: 'protected',
+            identity: message.userID
+        });
+        if (signedURL) {
+            setImageUri(signedURL);
+        }
+    }
+
+    if (message.imageUri) {
+        getUri();
     }
 
     return (
         <View style={[styles.container, isIncomming ? { justifyContent: 'flex-end', alignSelf: 'flex-end' } : {}]}>
             <View style={[styles.messageBubble, isIncomming ? { backgroundColor: '#c5e3cd' } : { backgroundColor: 'white' }]}>
                 {shouldDisplayContacts && <Text style={{ fontWeight: '700', color: contactNameColor }}>{sender.username}</Text>}
+                {imageUri &&
+                    <Image source={{ uri: imageUri }} style={{ width: 100, height: 100 }} />
+                }
                 <Text>{message.message}</Text>
                 <Text style={[styles.time, isIncomming ? { textAlign: 'right' } : { textAlign: 'left' }]}>{moment(message.createdAt).format('LT')}</Text>
             </View>

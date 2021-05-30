@@ -23,5 +23,11 @@
         }
       }
     }
+  },
+  "storage": {
+    "whatsapps3": {
+      "service": "S3",
+      "providerPlugin": "awscloudformation"
+    }
   }
 }
