@@ -22,7 +22,7 @@ const ChatListItem = (props: ChatListItemProps) => {
 
     const navigation = useNavigation();
 
-    const user = chatRoom.chatRoomUser.items[0].user;
+    const user = (chatRoom as any).chatRoomUser.items[0].user;
     const [recipient, setRecipient] = useState(null);
     const [lastMessage, setLastMessage] = useState(null);
     const [currentUser, setcurrentUser] = useState(null);
@@ -34,7 +34,7 @@ const ChatListItem = (props: ChatListItemProps) => {
 
             const userID = currentUser.attributes.sub;
 
-            const users = chatRoom.chatRoomUser.items;
+            const users = (chatRoom as any).chatRoomUser.items;
 
             if (users[0].user.id === userID) {
                 setRecipient(users[1].user);
@@ -51,7 +51,7 @@ const ChatListItem = (props: ChatListItemProps) => {
 
     const fetchLastMessage = async () => {
         try {
-            const chatRoomData = await API.graphql(graphqlOperation(getChatRoom, { id: chatRoom.id }));
+            const chatRoomData: any = await API.graphql(graphqlOperation(getChatRoom, { id: chatRoom.id }));
             const lastMessage = chatRoomData.data.getChatRoom.lastMessage;
 
             setLastMessage(lastMessage);
@@ -64,7 +64,7 @@ const ChatListItem = (props: ChatListItemProps) => {
     useEffect(() => {
         const subscription = API.graphql(graphqlOperation(onCreateMessage)).
             subscribe({
-                next: (data) => {
+                next: (data: any) => {
                     const subscriptionData = data.value.data;
                     const lastMessaegeData = subscriptionData.onCreateMessage;
 
@@ -81,7 +81,7 @@ const ChatListItem = (props: ChatListItemProps) => {
     }, [])
 
     const onPress = () => {
-        navigation.navigate("ChatRoomScreen", { id: chatRoom.id, name: recipient.name, imageUri: recipient.imageUri });
+        navigation.navigate("ChatRoomScreen", { id: chatRoom.id, name: (recipient as any).name, imageUri: (recipient as any).imageUri });
     }
 
     if (!recipient) {
@@ -94,7 +94,22 @@ const ChatListItem = (props: ChatListItemProps) => {
 
     const lastMessageDisplay = () => {
         return (lastMessage && lastMessage.userID === currentUser.attributes.sub)
-            ? 'You: ' + lastMessage.message : lastMessage.message
+            ? 'You: ' + lastMessage.message : lastMessage.message;
+
+
+
+
+        // if (lastMessage) {
+        //     if (lastMessage.userID === currentUser.attributes.sub) {
+        //         if (lastMessage.imageUri) {
+        //             return 'Photo';
+        //         } else {
+        //             return 'You: ' + lastMessage.message
+        //         }
+        //     } else {
+        //         return lastMessage.message;
+        //     }
+        // }
     }
 
     //lastMessage.user.id === userID

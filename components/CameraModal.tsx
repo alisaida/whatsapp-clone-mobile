@@ -57,16 +57,17 @@ const CameraModal = (props: CameraModalProps) => {
 
   const send = async () => {
     try {
+      const currentUser = await Auth.currentAuthenticatedUser();
+      const userID = currentUser.attributes.sub;
       const hash = shorthash.unique(image.uri);
       const response = await fetch(image.uri);
       const blob = await response.blob();
 
       await Storage.put(hash, blob, {
-        contentType: 'image/jpeg',
-        level: 'protected'
+        contentType: 'image/jpeg'
       });
 
-      sendTextMessage(hash);
+      sendTextMessage(userID, hash);
       onChangeTerm(!modalVisible);
 
     } catch (error) {
@@ -75,11 +76,8 @@ const CameraModal = (props: CameraModalProps) => {
   }
 
 
-  const sendTextMessage = async (key) => {
+  const sendTextMessage = async (userID, key) => {
     try {
-      const currentUser = await Auth.currentAuthenticatedUser();
-      const userID = currentUser.attributes.sub;
-
       const lastMessage = await API.graphql(graphqlOperation(createMessage, {
         input: {
           chatRoomID: chatRoomID,

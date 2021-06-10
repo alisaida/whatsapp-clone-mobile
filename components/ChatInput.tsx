@@ -3,7 +3,8 @@ import { StyleSheet, Text, View, TextInput, TouchableOpacity, KeyboardAvoidingVi
 import CameraModal from './CameraModal';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { API, Auth, graphqlOperation } from 'aws-amplify';
-import { createMessage, updateChatRoom } from '../src/graphql/mutations';
+import { createMessage, updateChatRoom, createChatRoom, updateChatRoomUser } from '../src/graphql/mutations';
+import { getChatRoom } from '../src/graphql/queries'
 
 export type ChatInputProps = {
     chatRoomID: String
@@ -24,6 +25,14 @@ const ChatInput = (props: ChatInputProps) => {
         }
     }
 
+    const updateChatRooms = async (id: any) => {
+        await API.graphql(graphqlOperation(updateChatRoomUser, {
+            input: {
+                id
+            }
+        }));
+    }
+
     const sendTextMessage = async () => {
         try {
             const currentUser = await Auth.currentAuthenticatedUser();
@@ -37,15 +46,25 @@ const ChatInput = (props: ChatInputProps) => {
                 }
             }));
 
-            // console.log(lastMessage)
-
-            const lastMessageID = lastMessage.data.createMessage.id;
+            //update lastMessage of chatRoom
+            const lastMessageID = (lastMessage as any).data.createMessage.id;
             await API.graphql(graphqlOperation(updateChatRoom, {
                 input: {
                     id: chatRoomID,
                     lastMessageID: lastMessageID
                 }
             }));
+
+            //update chat for all user in room
+            const chatRoomData = await API.graphql(graphqlOperation(getChatRoom, { id: chatRoomID }));
+            const chatRoomUsersData = (chatRoomData as any).data.getChatRoom.chatRoomUser.items;
+
+            let chatRoomUserIds = chatRoomUsersData.map((item: any) => item.id);
+
+            chatRoomUserIds.forEach((id: any) => {
+                updateChatRooms(id);
+            });
+
         } catch (error) {
             console.log(error)
         }

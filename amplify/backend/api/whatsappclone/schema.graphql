@@ -8,24 +8,28 @@ type User @model {
 }
 
 type ChatRoomUser @model
-@key(name:"byUser", fields:["userID","chatRoomID"])
+@key(name:"byUser", fields:["userID","updatedAt"],queryField:"chatRoomsByUser")
 @key(name:"byChatRoom", fields:["chatRoomID","userID"])
 {
   id: ID!
   userID: ID!
   chatRoomID: ID!
+  updatedAt: AWSDateTime!
   user: User @connection(fields: ["userID"])
   chatRoom: ChatRoom @connection(fields: ["chatRoomID"])
 }
 
-type ChatRoom @model {
+type ChatRoom @model
+@key(
+  name:"byUpdatedAt", 
+  fields:["id","updatedAt"])
+{
   id: ID!
-  #list of users
   chatRoomUser: [ChatRoomUser] @connection(keyName:"byChatRoom", fields: ["id"])
-  #list of messages
   messages: [Message] @connection(keyName:"byChatRoom", fields: ["id"])
   lastMessageID: ID
   lastMessage: Message @connection(fields: ["lastMessageID"])
+  updatedAt: AWSDateTime!
 }
 
 type Message @model 

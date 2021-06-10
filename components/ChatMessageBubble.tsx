@@ -43,8 +43,6 @@ const ChatMessageBubble = (props: MessageProps) => {
 
     const getUri = async () => {
         const signedURL = await Storage.get(message.imageUri, {
-            level: 'protected',
-            identity: message.userID
         });
         if (signedURL) {
             setImageUri(signedURL);

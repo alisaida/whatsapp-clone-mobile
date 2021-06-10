@@ -15,8 +15,8 @@ export const onCreateUser = /* GraphQL */ `
           id
           userID
           chatRoomID
-          createdAt
           updatedAt
+          createdAt
         }
         nextToken
       }
@@ -38,8 +38,8 @@ export const onUpdateUser = /* GraphQL */ `
           id
           userID
           chatRoomID
-          createdAt
           updatedAt
+          createdAt
         }
         nextToken
       }
@@ -61,8 +61,8 @@ export const onDeleteUser = /* GraphQL */ `
           id
           userID
           chatRoomID
-          createdAt
           updatedAt
+          createdAt
         }
         nextToken
       }
@@ -77,6 +77,7 @@ export const onCreateChatRoomUser = /* GraphQL */ `
       id
       userID
       chatRoomID
+      updatedAt
       user {
         id
         username
@@ -107,11 +108,10 @@ export const onCreateChatRoomUser = /* GraphQL */ `
           imageUri
           updatedAt
         }
-        createdAt
         updatedAt
+        createdAt
       }
       createdAt
-      updatedAt
     }
   }
 `;
@@ -121,6 +121,7 @@ export const onUpdateChatRoomUser = /* GraphQL */ `
       id
       userID
       chatRoomID
+      updatedAt
       user {
         id
         username
@@ -151,11 +152,10 @@ export const onUpdateChatRoomUser = /* GraphQL */ `
           imageUri
           updatedAt
         }
-        createdAt
         updatedAt
+        createdAt
       }
       createdAt
-      updatedAt
     }
   }
 `;
@@ -165,6 +165,7 @@ export const onDeleteChatRoomUser = /* GraphQL */ `
       id
       userID
       chatRoomID
+      updatedAt
       user {
         id
         username
@@ -195,11 +196,10 @@ export const onDeleteChatRoomUser = /* GraphQL */ `
           imageUri
           updatedAt
         }
-        createdAt
         updatedAt
+        createdAt
       }
       createdAt
-      updatedAt
     }
   }
 `;
@@ -212,8 +212,8 @@ export const onCreateChatRoom = /* GraphQL */ `
           id
           userID
           chatRoomID
-          createdAt
           updatedAt
+          createdAt
         }
         nextToken
       }
@@ -249,13 +249,13 @@ export const onCreateChatRoom = /* GraphQL */ `
         chatRoom {
           id
           lastMessageID
-          createdAt
           updatedAt
+          createdAt
         }
         updatedAt
       }
-      createdAt
       updatedAt
+      createdAt
     }
   }
 `;
@@ -268,8 +268,8 @@ export const onUpdateChatRoom = /* GraphQL */ `
           id
           userID
           chatRoomID
-          createdAt
           updatedAt
+          createdAt
         }
         nextToken
       }
@@ -305,13 +305,13 @@ export const onUpdateChatRoom = /* GraphQL */ `
         chatRoom {
           id
           lastMessageID
-          createdAt
           updatedAt
+          createdAt
         }
         updatedAt
       }
-      createdAt
       updatedAt
+      createdAt
     }
   }
 `;
@@ -324,8 +324,8 @@ export const onDeleteChatRoom = /* GraphQL */ `
           id
           userID
           chatRoomID
-          createdAt
           updatedAt
+          createdAt
         }
         nextToken
       }
@@ -361,13 +361,13 @@ export const onDeleteChatRoom = /* GraphQL */ `
         chatRoom {
           id
           lastMessageID
-          createdAt
           updatedAt
+          createdAt
         }
         updatedAt
       }
-      createdAt
       updatedAt
+      createdAt
     }
   }
 `;
@@ -410,8 +410,8 @@ export const onCreateMessage = /* GraphQL */ `
           imageUri
           updatedAt
         }
-        createdAt
         updatedAt
+        createdAt
       }
       updatedAt
     }
@@ -456,8 +456,8 @@ export const onUpdateMessage = /* GraphQL */ `
           imageUri
           updatedAt
         }
-        createdAt
         updatedAt
+        createdAt
       }
       updatedAt
     }
@@ -502,8 +502,8 @@ export const onDeleteMessage = /* GraphQL */ `
           imageUri
           updatedAt
         }
-        createdAt
         updatedAt
+        createdAt
       }
       updatedAt
     }

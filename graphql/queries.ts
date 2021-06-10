@@ -8,10 +8,11 @@ export const getUserChatRooms = /* GraphQL */ `
       name
       imageUri
       status
-      chatRoomUsers {
+      chatRoomUsers(sortDirection: DESC) {
         items {
             chatRoom{
-              id
+              id,
+              updatedAt,
               chatRoomUser{
                   items{
                       user{

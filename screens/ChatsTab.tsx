@@ -5,13 +5,13 @@ import ChatListItem from '../components/ChatListItem';
 import { Text, View } from '../components/Themed';
 import FlatListItemSeparator from '../components/FlatListItemSeparator'
 
-import chatRooms1 from '../data/chatRooms';
 import NewChatIcon from '../components/NewChatIcon';
 
 import { API, Auth, graphqlOperation } from 'aws-amplify';
 import { getUser, getChatRoom } from '../src/graphql/queries'
 import { getUserChatRooms, listChatRoomUsers } from '../graphql/queries'
 import { onCreateMessage } from '../src/graphql/subscriptions';
+import { ChatRoom } from '../types'
 
 const ChatsTab = () => {
   const [chatRooms, setChatRooms] = useState();
@@ -26,10 +26,15 @@ const ChatsTab = () => {
         }
       ));
 
-      const chatRooms = chatRoomsData.data.getUser.chatRoomUsers.items
+      const chatRooms = (chatRoomsData as any).data.getUser.chatRoomUsers.items.map((item: any) => ({
+        chatRoom: item.chatRoom
+      }));
+
+      // console.log(chatRooms[0].chatRoom.updatedAt);
+      // console.log(chatRooms);
+
 
       setChatRooms(chatRooms);
-      // console.log(chatRooms);
     } catch (error) {
       console.log(error)
     }
@@ -39,6 +44,11 @@ const ChatsTab = () => {
     fetchChatRooms();
   }, []);
 
+  useEffect(() => {
+    return () => {
+      // console.log("cleaned up");
+    };
+  }, []);
 
   const getAuthUser = async () => {
     try {
@@ -53,7 +63,7 @@ const ChatsTab = () => {
     getAuthUser();
   }, [])
 
-  const checkUserIsRecipient = async (userID, chatRoomID) => {
+  const checkUserIsRecipient = async (userID: any, chatRoomID: any) => {
     try {
 
       const chatRoomsUsersData = await API.graphql(graphqlOperation(listChatRoomUsers,
@@ -62,10 +72,10 @@ const ChatsTab = () => {
         }
       ));
 
-      const userList = chatRoomsUsersData.data.getChatRoom.chatRoomUser.items;
+      const userList = (chatRoomsUsersData as any).data.getChatRoom.chatRoomUser.items;
 
       const isRecipient = userList.find(
-        user => user.id === userID
+        (user: any) => user.id === userID
       );
 
       return isRecipient;
@@ -77,7 +87,7 @@ const ChatsTab = () => {
   useEffect(() => {
     const subscription = API.graphql(graphqlOperation(onCreateMessage)).
       subscribe({
-        next: (data) => {
+        next: (data: any) => {
           const subscriptionData = data.value.data;
           const lastMessaegeData = subscriptionData.onCreateMessage;
           const subChatRoomID = subscriptionData.onCreateMessage.chatRoom.id;
@@ -94,7 +104,8 @@ const ChatsTab = () => {
             }
           }
 
-          fetchChatRooms(); //need to revisit this
+          //reorder here??
+          fetchChatRooms();
 
           return () => subscription.unsubscribe();
         }
@@ -112,6 +123,7 @@ const ChatsTab = () => {
           :
           <FlatList
             data={chatRooms}
+            // data={(chatRooms as any).sort((a: any, b: any) => b.chatRoom.updatedAt.localeCompare(a.chatRoom.updatedAt))}
             style={styles.flatList}
             keyExtractor={item => item.chatRoom.id}
             renderItem={({ item }) => <ChatListItem chatRoom={item.chatRoom} />}

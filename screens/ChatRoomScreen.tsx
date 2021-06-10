@@ -41,6 +41,7 @@ const ChatRoomScreen = () => {
                     limit: 10
                 }
             ));
+
             setMessages(messageData.data.messagesByChatRoom.items);
 
             if (chatRoom && chatRoom.chatRoomUser) {
@@ -117,12 +118,12 @@ const ChatRoomScreen = () => {
     return (
         <ImageBackground source={wallpaper} style={styles.background}>
             <FlatList
-                data={messages}
+                data={messages.sort((a: any, b: any) => a.createdAt.localeCompare(b.createdAt))}
                 renderItem={renderItems}
                 keyExtractor={item => item.id}
                 style={{ flex: 1 }}
-
-                inverted={true} //break auto scroll to top, not sure why
+                inverted={true}
+                contentContainerStyle={{ flexDirection: 'column-reverse' }}
             />
             <ChatInput chatRoomID={route.params.id} />
         </ImageBackground>
