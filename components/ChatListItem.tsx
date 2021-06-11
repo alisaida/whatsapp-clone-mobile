@@ -5,7 +5,7 @@ import { API, Auth, graphqlOperation } from 'aws-amplify';
 import { ChatRoom } from '../types';
 import Avatar from './Avatar';
 
-import { getChatRoom } from '../src/graphql/queries'
+import { getChatRoom, getUser } from '../src/graphql/queries'
 import { onCreateMessage } from '../src/graphql/subscriptions'
 
 import { timeAgo } from '../DateUtil/DateUtil';
@@ -20,9 +20,11 @@ const ChatListItem = (props: ChatListItemProps) => {
 
     const { chatRoom } = props;
 
+    // console.log(chatRoom)
+
     const navigation = useNavigation();
 
-    const user = (chatRoom as any).chatRoomUser.items[0].user;
+    // const user = (chatRoom as any).chatRoomUser[0];
     const [recipient, setRecipient] = useState(null);
     const [lastMessage, setLastMessage] = useState(null);
     const [currentUser, setcurrentUser] = useState(null);
@@ -34,16 +36,53 @@ const ChatListItem = (props: ChatListItemProps) => {
 
             const userID = currentUser.attributes.sub;
 
-            const users = (chatRoom as any).chatRoomUser.items;
+            const users = (chatRoom as ChatRoom).chatRoomUser;
+            //load user
 
-            if (users[0].user.id === userID) {
-                setRecipient(users[1].user);
+            if (users[0].userID === userID) {
+
+                loadUserDetails(users[1].userID)
             } else {
-                setRecipient(users[0].user);
+                loadUserDetails(users[0].userID)
+
             }
         }
         getRecipient();
     }, []);
+
+    useEffect(() => {
+        return () => {
+            // console.log("cleaned up");
+        };
+    }, []);
+
+    const loadUserDetails = async (userID: any) => {
+        try {
+
+            const userDetails = await API.graphql(graphqlOperation(getUser,
+                {
+                    id: userID
+                }
+            ));
+
+
+            const recipientData = {
+                createdAt: userDetails.data.getUser.createdAt,
+                id: userDetails.data.getUser.id,
+                imageUri: userDetails.data.getUser.imageUri,
+                name: userDetails.data.getUser.name,
+                updatedAt: userDetails.data.getUser.updatedAt,
+                userID: userDetails.data.getUser.userID,
+            };
+            // console.log(userData);
+
+
+
+            setRecipient(recipientData);
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
     useEffect(() => {
         fetchLastMessage();

@@ -56,14 +56,14 @@ const ChatInput = (props: ChatInputProps) => {
             }));
 
             //update chat for all user in room
-            const chatRoomData = await API.graphql(graphqlOperation(getChatRoom, { id: chatRoomID }));
-            const chatRoomUsersData = (chatRoomData as any).data.getChatRoom.chatRoomUser.items;
+            // const chatRoomData = await API.graphql(graphqlOperation(getChatRoom, { id: chatRoomID }));
+            // const chatRoomUsersData = (chatRoomData as any).data.getChatRoom.chatRoomUser.items;
 
-            let chatRoomUserIds = chatRoomUsersData.map((item: any) => item.id);
+            // let chatRoomUserIds = chatRoomUsersData.map((item: any) => item.id);
 
-            chatRoomUserIds.forEach((id: any) => {
-                updateChatRooms(id);
-            });
+            // chatRoomUserIds.forEach((id: any) => {
+            //     updateChatRooms(id);
+            // });
 
         } catch (error) {
             console.log(error)

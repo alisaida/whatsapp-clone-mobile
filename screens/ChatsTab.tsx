@@ -10,11 +10,14 @@ import NewChatIcon from '../components/NewChatIcon';
 import { API, Auth, graphqlOperation } from 'aws-amplify';
 import { getUser, getChatRoom } from '../src/graphql/queries'
 import { getUserChatRooms, listChatRoomUsers } from '../graphql/queries'
-import { onCreateMessage } from '../src/graphql/subscriptions';
-import { ChatRoom } from '../types'
+import { onUpdateChatRoom } from '../src/graphql/subscriptions';
+import { ChatRoom, ChatRoomUser } from '../types'
+import chatRooms from '../data/chatRooms';
 
 const ChatsTab = () => {
-  const [chatRooms, setChatRooms] = useState();
+  const [chatRooms, setChatRooms] = useState([]);
+  const [currentUser, setCurrentUser] = useState();
+  const [refresh, setRefresh] = useState(false);
 
   const fetchChatRooms = async () => {
     try {
@@ -26,12 +29,19 @@ const ChatsTab = () => {
         }
       ));
 
-      const chatRooms = (chatRoomsData as any).data.getUser.chatRoomUsers.items.map((item: any) => ({
-        chatRoom: item.chatRoom
+      // const chatRooms = (chatRoomsData as any).data.getUser.chatRoomUsers.items.map((item: any) => ({
+      //   chatRoom: item.chatRoom
+      // }));
+
+      const chatRooms = (chatRoomsData as any).data.getUser.chatRoomUsers.items.map((item: ChatRoomUser) => ({
+        id: item.chatRoom.id,
+        lastMessage: item.chatRoom.lastMessage,
+        updatedAt: item.chatRoom.updatedAt,
+        chatRoomUser: item.chatRoom.chatRoomUser.items,
       }));
 
-      // console.log(chatRooms[0].chatRoom.updatedAt);
-      // console.log(chatRooms);
+      // console.log(chat[0]);
+      // console.log(chatRooms.length);
 
 
       setChatRooms(chatRooms);
@@ -53,6 +63,7 @@ const ChatsTab = () => {
   const getAuthUser = async () => {
     try {
       const user = await Auth.currentAuthenticatedUser();
+      setCurrentUser(user.attributes.sub);
       return user.attributes.sub;
     } catch (error) {
       console.log(error);
@@ -84,50 +95,77 @@ const ChatsTab = () => {
     }
   }
 
+
   useEffect(() => {
-    const subscription = API.graphql(graphqlOperation(onCreateMessage)).
+    const subscription = API.graphql(graphqlOperation(onUpdateChatRoom)).
       subscribe({
         next: (data: any) => {
           const subscriptionData = data.value.data;
-          const lastMessaegeData = subscriptionData.onCreateMessage;
-          const subChatRoomID = subscriptionData.onCreateMessage.chatRoom.id;
-          const userID = getAuthUser();
+          // const updatedChatRoom = subscriptionData.onUpdateChatRoom;
+          // const userID = getAuthUser();
 
-          // console.log(userID)
+          const updatedChatRoom = {
+            id: subscriptionData.onUpdateChatRoom.id,
+            chatRoomUsers: subscriptionData.onUpdateChatRoom.chatRoomUser.items,
+            updatedAt: subscriptionData.onUpdateChatRoom.updatedAt
+          };
 
-          //if i didnt send message
-          if (lastMessaegeData.userID != userID) {
-            const isRecipient = checkUserIsRecipient(userID, lastMessaegeData.chatRoomID);
+          // console.log(updatedChatRoom);
 
-            if (!isRecipient) {
-              return;
-            }
+          // const chatRoomID = updatedChatRoom.id;
+          const chatRoomRecipients = updatedChatRoom.chatRoomUsers;
+          // console.log(chatRoomRecipients);
+
+          const isRecipient = chatRoomRecipients.find(
+            (recipient: any) => recipient.userID === currentUser
+          );
+
+          if (!isRecipient) {
+            return;
           }
 
-          //reorder here??
-          fetchChatRooms();
+          let cloneChats = [...chatRooms];
+
+          const updatedChatRoomIdx = cloneChats.findIndex(
+            (chatRoom: any) => chatRoom.id === updatedChatRoom.id
+          );
+
+
+
+          if (updatedChatRoomIdx != -1 && cloneChats.length > 1) {
+
+            cloneChats.splice(updatedChatRoomIdx, 1);
+
+            setChatRooms([updatedChatRoom, ...cloneChats]);
+
+            setRefresh(!refresh);
+          }
 
           return () => subscription.unsubscribe();
         }
       })
-  }, [])
+  }, [chatRooms])
+
 
   return (
     <View style={styles.container}>
       {
-        (chatRooms && chatRooms.length === 0) ?
+        (!chatRooms || (chatRooms && chatRooms.length === 0)) ?
           <View>
             <Text>no conversations</Text>
           </View>
 
           :
           <FlatList
-            data={chatRooms}
-            // data={(chatRooms as any).sort((a: any, b: any) => b.chatRoom.updatedAt.localeCompare(a.chatRoom.updatedAt))}
+            // data={chatRooms}
+            data={(chatRooms as any).sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))}
             style={styles.flatList}
-            keyExtractor={item => item.chatRoom.id}
-            renderItem={({ item }) => <ChatListItem chatRoom={item.chatRoom} />}
+            keyExtractor={item => item.id}
+            renderItem={({ item }) => <ChatListItem chatRoom={item} />}
             ItemSeparatorComponent={FlatListItemSeparator}
+            extraData={refresh}
+
+
           />
       }
       <NewChatIcon />

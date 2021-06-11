@@ -31,29 +31,37 @@ export type ContactsTabParamList = {
 };
 
 export type User = {
-  id: String;
-  name: String;
-  imageUri: String;
-  status: String;
+  id: string;
+  name: string;
+  imageUri: string;
+  status: string;
 }
 
 export type Message = {
-  id: String;
-  message: String;
-  createdAt: String;
-  userID: User;
-  chatRoomID: String
+  id: string;
+  message: string;
+  createdAt: string;
+  userID: string;
+  chatRoomID: string;
+  imageUri: string;
+  user: User;
+  chatRoom: ChatRoom;
 }
 
 export type ChatRoom = {
-  id: String;
-  users: User[];
+  id: string;
+  chatRoomUser: User[];
   messages: Message[];
+  lastMessageID: string;
   lastMessage: Message;
+  updatedAt: string;
 }
 
 export type ChatRoomUser = {
-  id: String;
-  userID: String;
-  chatRoomID: String;
+  id: string;
+  userID: string;
+  chatRoomID: string;
+  updatedAt: string;
+  user: User;
+  chatRoom: ChatRoom;
 }

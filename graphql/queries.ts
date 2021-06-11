@@ -15,13 +15,10 @@ export const getUserChatRooms = /* GraphQL */ `
               updatedAt,
               chatRoomUser{
                   items{
-                      user{
-                        id
-                        username
-                        name
-                        imageUri
-                        status
-                      }
+                    chatRoomID
+                    id
+                    updatedAt
+                    userID
                   }
               }
               lastMessage{

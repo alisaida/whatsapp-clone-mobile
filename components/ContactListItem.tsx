@@ -19,18 +19,6 @@ const ContactListItem = (props: ContactListItemProps) => {
     const { user } = props;
     const navigation = useNavigation();
 
-
-
-    //find user chats 
-    const findExistingChats = (userChats) => {
-
-        let existingChat = userChats.find(chats => chats.chatRoom.chatRoomUser.items[0].user.id === user.id);
-        if (!existingChat)
-            existingChat = userChats.find(chats => chats.chatRoom.chatRoomUser.items[1].user.id === user.id);
-
-        return existingChat;
-    }
-
     const onPress = async () => {
         try {
             //setup chatroom, add user-prop and current auth user
@@ -41,9 +29,9 @@ const ContactListItem = (props: ContactListItemProps) => {
             const userChats = currentUserChats.data.getUser.chatRoomUsers.items;
 
             //find chatRoom between current and selected users
-            let existingChat = userChats.find(chats => chats.chatRoom.chatRoomUser.items[0].user.id === user.id);
+            let existingChat = userChats.find(chats => chats.chatRoom.chatRoomUser.items[0].userID === user.id);
             if (!existingChat) {
-                existingChat = userChats.find(chats => chats.chatRoom.chatRoomUser.items[1].user.id === user.id);
+                existingChat = userChats.find(chats => chats.chatRoom.chatRoomUser.items[1].userID === user.id);
             }
 
             let chatRoom = null;
