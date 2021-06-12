@@ -2,13 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { API, Auth, graphqlOperation } from 'aws-amplify';
-import { ChatRoom } from '../types';
+import { ChatRoom, User } from '../types';
 import Avatar from './Avatar';
 
 import { getChatRoom, getUser } from '../src/graphql/queries'
 import { onCreateMessage } from '../src/graphql/subscriptions'
 
 import { timeAgo } from '../DateUtil/DateUtil';
+import { Ionicons } from '@expo/vector-icons';
+
 
 export type ChatListItemProps = {
     chatRoom: ChatRoom;
@@ -33,19 +35,8 @@ const ChatListItem = (props: ChatListItemProps) => {
         const getRecipient = async () => {
             const currentUser = await Auth.currentAuthenticatedUser();
             setcurrentUser(currentUser);
-
-            const userID = currentUser.attributes.sub;
-
-            const users = (chatRoom as ChatRoom).chatRoomUser;
-            //load user
-
-            if (users[0].userID === userID) {
-
-                loadUserDetails(users[1].userID)
-            } else {
-                loadUserDetails(users[0].userID)
-
-            }
+            const currentUserID = currentUser.attributes.sub
+            loadUserDetails(currentUserID);
         }
         getRecipient();
     }, []);
@@ -56,12 +47,23 @@ const ChatListItem = (props: ChatListItemProps) => {
         };
     }, []);
 
-    const loadUserDetails = async (userID: any) => {
+    const loadUserDetails = async (currentUserID: string) => {
+
+        const users: Array<any> = (chatRoom as ChatRoom).chatRoomUser;
+
+        let recipientUserID: string;
+        if (users[0].userID === currentUserID) {
+
+            recipientUserID = users[1].userID;
+        } else {
+            recipientUserID = users[0].userID;
+        }
+
         try {
 
             const userDetails = await API.graphql(graphqlOperation(getUser,
                 {
-                    id: userID
+                    id: recipientUserID
                 }
             ));
 
@@ -130,28 +132,20 @@ const ChatListItem = (props: ChatListItemProps) => {
     if (!lastMessage) {
         return null;
     }
-
     const lastMessageDisplay = () => {
-        return (lastMessage && lastMessage.userID === currentUser.attributes.sub)
-            ? 'You: ' + lastMessage.message : lastMessage.message;
-
-
-
-
-        // if (lastMessage) {
-        //     if (lastMessage.userID === currentUser.attributes.sub) {
-        //         if (lastMessage.imageUri) {
-        //             return 'Photo';
-        //         } else {
-        //             return 'You: ' + lastMessage.message
-        //         }
-        //     } else {
-        //         return lastMessage.message;
-        //     }
-        // }
+        if (lastMessage) {
+            if (lastMessage.imageUri) {
+                return <><Ionicons name="camera" size={15} color="grey" /><Text> Photo </Text></>
+                    ;
+            }
+            if (lastMessage.userID === currentUser.attributes.sub) {
+                return 'You: ' + lastMessage.message
+            } else {
+                return lastMessage.message;
+            }
+        }
     }
 
-    //lastMessage.user.id === userID
     return (
         <TouchableOpacity style={styles.container} onPress={onPress}>
             <View style={styles.leftContainer}>

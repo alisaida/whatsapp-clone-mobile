@@ -18,7 +18,7 @@ export type CameraModalProps = {
 const CameraModal = (props: CameraModalProps) => {
 
   const { chatRoomID, modalVisible, onChangeTerm } = props;
-
+  const [startY, setStartY] = useState(0 as number);
   const [hasPermission, setHasPermission] = useState(null);
   const [cameraRef, setCameraRef] = useState(null)
   const [type, setType] = useState(Camera.Constants.Type.back);
@@ -108,7 +108,15 @@ const CameraModal = (props: CameraModalProps) => {
         visible={modalVisible}
       >
 
-        <View style={styles.container} >
+        <View
+          onTouchStart={e => setStartY(e.nativeEvent.locationY)}
+          onTouchCancel={e => {
+            const endY: number = e.nativeEvent.locationY;
+            if (endY - startY > 0) {
+              onChangeTerm(!modalVisible)
+            }
+          }}
+          style={styles.container} >
           {
             image ?
               <ImageBackground source={{ isStatic: true, uri: image.uri }} style={styles.previewImage} >

@@ -6,7 +6,7 @@ import { User } from '../types';
 import Avatar from './Avatar';
 
 import { Auth, API, graphqlOperation } from 'aws-amplify';
-import { createChatRoom, createChatRoomUser } from '../src/graphql/mutations'
+import { createChatRoom, createChatRoomUser, updateChatRoom } from '../src/graphql/mutations'
 
 import { getUserChatRooms } from '../graphql/queries';
 
@@ -66,6 +66,14 @@ const ContactListItem = (props: ContactListItemProps) => {
                         userID: currentUser.attributes.sub
                     }
                 }));
+
+                //update chatroom
+                await API.graphql(graphqlOperation(updateChatRoom, {
+                    input: {
+                        id: chatRoom.id
+                    }
+                }));
+
             }
 
             navigation.navigate("ChatRoomScreen", { id: chatRoom.id, name: user.name, imageUri: user.imageUri });

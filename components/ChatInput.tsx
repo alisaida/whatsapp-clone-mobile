@@ -15,7 +15,7 @@ const ChatInput = (props: ChatInputProps) => {
     const { chatRoomID } = props;
 
     const [message, setMessage] = useState('');
-    const [modalVisible, setModalVisible] = useState(false);
+    const [cameraModalVisible, setCameraModalVisible] = useState(false);
 
     const handleSend = () => {
         if (message) {
@@ -76,7 +76,7 @@ const ChatInput = (props: ChatInputProps) => {
     }
 
     const openCamera = () => {
-        setModalVisible(!modalVisible);
+        setCameraModalVisible(!cameraModalVisible);
     }
 
     return (
@@ -99,11 +99,11 @@ const ChatInput = (props: ChatInputProps) => {
                 </TouchableOpacity>
             </View>
             {
-                modalVisible &&
+                cameraModalVisible &&
                 <CameraModal
                     chatRoomID={chatRoomID}
-                    modalVisible={modalVisible}
-                    onChangeTerm={(newState) => { setModalVisible(newState); }}
+                    modalVisible={cameraModalVisible}
+                    onChangeTerm={(newState) => { setCameraModalVisible(newState); }}
                 />
             }
         </KeyboardAvoidingView >
