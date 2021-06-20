@@ -6,7 +6,7 @@ import { Text, View } from '../components/Themed';
 import FlatListItemSeparator from '../components/FlatListItemSeparator'
 
 import { API, Auth, graphqlOperation } from 'aws-amplify';
-import { listUsers } from '../graphql/queries'
+import { listUsers } from '../src/graphql/custom-queries'
 export default function ContactsTab() {
 
   const [contacts, setContacts] = useState(null);

@@ -9,7 +9,7 @@ import NewChatIcon from '../components/NewChatIcon';
 
 import { API, Auth, graphqlOperation } from 'aws-amplify';
 import { getUser, getChatRoom } from '../src/graphql/queries'
-import { getUserChatRooms, listChatRoomUsers } from '../graphql/queries'
+import { getUserChatRooms, listChatRoomUsers } from '../src/graphql/custom-queries'
 import { onUpdateChatRoom } from '../src/graphql/subscriptions';
 import { ChatRoom, ChatRoomUser } from '../types'
 import chatRooms from '../data/chatRooms';

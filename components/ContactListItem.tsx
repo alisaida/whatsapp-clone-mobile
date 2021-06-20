@@ -8,7 +8,7 @@ import Avatar from './Avatar';
 import { Auth, API, graphqlOperation } from 'aws-amplify';
 import { createChatRoom, createChatRoomUser, updateChatRoom } from '../src/graphql/mutations'
 
-import { getUserChatRooms } from '../graphql/queries';
+import { getUserChatRooms } from '../src/graphql/custom-queries';
 
 export type ContactListItemProps = {
     user: User;
@@ -20,6 +20,18 @@ const ContactListItem = (props: ContactListItemProps) => {
     const navigation = useNavigation();
 
     const onPress = async () => {
+        if (!chatRoom) {
+            initialiseChatRoom();
+        } else {
+            addUserToGroup();
+        }
+    }
+
+    const addUserToGroup = async () => {
+
+    }
+
+    const initialiseChatRoom = async () => {
         try {
             //setup chatroom, add user-prop and current auth user
             const currentUser = await Auth.currentAuthenticatedUser();
