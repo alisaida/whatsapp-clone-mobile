@@ -1,3 +1,6 @@
 [submodule "src"]
 	path = src
 	url = https://alisaida@github.com/alisaida/whatsapp-clone-graphql.git
+[submodule "amplify"]
+	path = amplify
+	url = https://alisaida@github.com/alisaida/whatsapp-clone-aws-backend.git
