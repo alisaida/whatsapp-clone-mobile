@@ -50,7 +50,7 @@ export type Message = {
 
 export type ChatRoom = {
   id: string;
-  chatRoomUser: User[];
+  chatRoomUser: ChatRoomUser[];
   messages: Message[];
   lastMessageID: string;
   lastMessage: Message;

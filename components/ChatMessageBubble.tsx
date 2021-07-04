@@ -61,7 +61,7 @@ const ChatMessageBubble = (props: MessageProps) => {
 
     return (
         <View style={[styles.container, isIncomming ? { justifyContent: 'flex-end', alignSelf: 'flex-end' } : {}]}>
-            <View style={[styles.messageBubble, isIncomming ? { backgroundColor: '#c5e3cd' } : { backgroundColor: 'white' }]}>
+            <View style={[styles.messageBubble, isIncomming ? { backgroundColor: '#d8f7c7' } : { backgroundColor: 'white' }]}>
                 {shouldDisplayContacts && <Text style={{ fontWeight: '700', color: contactNameColor }}>{sender.username}</Text>}
                 {imageUri &&
 

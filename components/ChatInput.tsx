@@ -1,14 +1,14 @@
 import React, { useState } from 'react'
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, KeyboardAvoidingView, ScrollView } from 'react-native'
 import CameraModal from './CameraModal';
-import { Ionicons, MaterialIcons } from '@expo/vector-icons';
+import { Fontisto, Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { API, Auth, graphqlOperation } from 'aws-amplify';
 import { createMessage, updateChatRoom, createChatRoom, updateChatRoomUser } from '../src/graphql/mutations';
 import { getChatRoom } from '../src/graphql/queries'
 import { useNavigation } from '@react-navigation/native';
 
 export type ChatInputProps = {
-    chatRoomID: String
+    chatRoomID: string
 }
 
 const ChatInput = (props: ChatInputProps) => {
@@ -26,10 +26,6 @@ const ChatInput = (props: ChatInputProps) => {
         } else {
             sendVoiceMessage();
         }
-    }
-
-    const handleAddUser = () => {
-        navigation.navigate('Contacts');
     }
 
     const sendTextMessage = async () => {

@@ -11,7 +11,7 @@ import wallpaper from '../assets/images/wallpaper.png';
 import ChatMessageBubble from '../components/ChatMessageBubble';
 import ChatMessageDateHeader from '../components/ChatMessageDateHeader';
 import ChatInput from '../components/ChatInput';
-import { ChatRoom } from '../types'
+import { ChatRoom, Message } from '../types'
 
 const ChatRoomScreen = () => {
 
@@ -118,7 +118,7 @@ const ChatRoomScreen = () => {
     return (
         <ImageBackground source={wallpaper} style={styles.background}>
             <FlatList
-                data={messages.sort((a: any, b: any) => a.createdAt.localeCompare(b.createdAt))}
+                data={messages.sort((a: Message, b: Message) => a.createdAt.localeCompare(b.createdAt))}
                 renderItem={renderItems}
                 keyExtractor={item => item.id}
                 style={{ flex: 1 }}

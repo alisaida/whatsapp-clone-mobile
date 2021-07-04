@@ -48,11 +48,9 @@ const RootNavigator = () => {
                     headerRight: () => (
                         <View style={styles.headerRight}>
                             <Octicons name="search" size={18} color="white" />
-                            <SettingsMenu />
+                            <SettingsMenu displaySettings={true} displayAddContact={false} chatRoomID={''} />
                         </View>
                     ),
-                    // headerShown: false,
-
                 }}
             />
             <Stack.Screen
@@ -79,6 +77,7 @@ const RootNavigator = () => {
                         <View style={styles.chatRoomRight}>
                             <Ionicons name="videocam-outline" size={24} color="white" style={{ marginHorizontal: 5 }} />
                             <Ionicons name="call-outline" size={24} color="white" style={{ marginHorizontal: 5 }} />
+                            <SettingsMenu displaySettings={false} displayAddContact={true} chatRoomID={route.params.id} />
                         </View>
                     )
                 })}

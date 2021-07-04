@@ -35,8 +35,17 @@ const ChatListItem = (props: ChatListItemProps) => {
         const getRecipient = async () => {
             const currentUser = await Auth.currentAuthenticatedUser();
             setcurrentUser(currentUser);
-            const currentUserID = currentUser.attributes.sub
-            loadUserDetails(currentUserID);
+
+            if (chatRoom.chatRoomUser.length === 2) {
+                const currentUserID = currentUser.attributes.sub
+                loadUserDetails(currentUserID);
+            } else {
+                const recipientData = {
+                    imageUri: 'https://www.pngkit.com/png/full/44-443934_post-navigation-people-icon-grey.png',
+                    name: 'group chat',
+                };
+                setRecipient(recipientData);
+            }
         }
         getRecipient();
     }, []);
@@ -53,20 +62,13 @@ const ChatListItem = (props: ChatListItemProps) => {
 
         let recipientUserID: string;
         if (users[0].userID === currentUserID) {
-
             recipientUserID = users[1].userID;
         } else {
             recipientUserID = users[0].userID;
         }
 
         try {
-
-            const userDetails = await API.graphql(graphqlOperation(getUser,
-                {
-                    id: recipientUserID
-                }
-            ));
-
+            const userDetails = await API.graphql(graphqlOperation(getUser, { id: recipientUserID }));
 
             const recipientData = {
                 createdAt: userDetails.data.getUser.createdAt,
@@ -76,9 +78,6 @@ const ChatListItem = (props: ChatListItemProps) => {
                 updatedAt: userDetails.data.getUser.updatedAt,
                 userID: userDetails.data.getUser.userID,
             };
-            // console.log(userData);
-
-
 
             setRecipient(recipientData);
         } catch (error) {

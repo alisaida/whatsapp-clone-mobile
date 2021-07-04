@@ -21,7 +21,7 @@ export default ChatMessageDateHeader
 const styles = StyleSheet.create({
     container: {
         alignSelf: 'center',
-        backgroundColor: '#fae49d',
+        backgroundColor: '#cfdafa',
         borderRadius: 5,
         paddingVertical: 5,
         paddingHorizontal: 10,

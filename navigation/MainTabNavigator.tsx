@@ -35,8 +35,6 @@ export default function MainTabNavigator() {
           fontWeight: 'bold'
         },
         showIcon: true,
-        // tabStyle: { width: 100 },
-        // showHeader: false
       }}
     >
       <MainTab.Screen
@@ -53,7 +51,6 @@ export default function MainTabNavigator() {
       />
       <MainTab.Screen name="Chats" component={ChatsTabNavigator} />
       <MainTab.Screen name="Calls" component={CallsTabNavigator} />
-      {/* <MainTab.Screen name="Contacts" component={ContactsTabNavigator} /> */}
     </MainTab.Navigator>
   );
 }

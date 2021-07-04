@@ -12,23 +12,45 @@ import { getUserChatRooms } from '../src/graphql/custom-queries';
 
 export type ContactListItemProps = {
     user: User;
+    chatRoomID: string;
 }
 
 const ContactListItem = (props: ContactListItemProps) => {
 
-    const { user } = props;
+    const { user, chatRoomID } = props;
     const navigation = useNavigation();
 
     const onPress = async () => {
-        if (!chatRoom) {
-            initialiseChatRoom();
-        } else {
+        if (chatRoomID !== '') {
             addUserToGroup();
+        } else {
+            initialiseChatRoom();
         }
     }
 
     const addUserToGroup = async () => {
+        console.log(chatRoomID);
+        try {
 
+            //add new user to chatroom users
+            await API.graphql(graphqlOperation(createChatRoomUser, {
+                input: {
+                    chatRoomID: chatRoomID,
+                    userID: user.id
+                }
+            }));
+
+            //update chatroom
+            await API.graphql(graphqlOperation(updateChatRoom, {
+                input: {
+                    id: chatRoomID
+                }
+            }));
+
+            navigation.navigate("ChatRoomScreen", { id: chatRoomID, name: 'group chat', imageUri: 'https://www.pngkit.com/png/full/44-443934_post-navigation-people-icon-grey.png' });
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     const initialiseChatRoom = async () => {
@@ -41,9 +63,9 @@ const ContactListItem = (props: ContactListItemProps) => {
             const userChats = currentUserChats.data.getUser.chatRoomUsers.items;
 
             //find chatRoom between current and selected users
-            let existingChat = userChats.find(chats => chats.chatRoom.chatRoomUser.items[0].userID === user.id);
+            let existingChat = userChats.find(chats => chats.chatRoom.chatRoomUser.items[0].userID === user.id && chats.chatRoom.chatRoomUser.items < 3);
             if (!existingChat) {
-                existingChat = userChats.find(chats => chats.chatRoom.chatRoomUser.items[1].userID === user.id);
+                existingChat = userChats.find(chats => chats.chatRoom.chatRoomUser.items[1].userID === user.id && chats.chatRoom.chatRoomUser.items < 3);
             }
 
             let chatRoom = null;

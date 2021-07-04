@@ -5,9 +5,15 @@ import { useRoute, useNavigation } from '@react-navigation/native';
 
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
-import ProfileScreen from '../screens/SettingsScreen'
+export type SettingsMenuProps = {
+    displaySettings: boolean;
+    displayAddContact: boolean;
+    chatRoomID: string;
+}
 
-const SettingsMenu = () => {
+const SettingsMenu = (props: SettingsMenuProps) => {
+
+    const { displaySettings, displayAddContact, chatRoomID } = props;
 
     const [menuRef, setMenuRef] = useState(null);
     const [displayMenu, setDisplayMenu] = useState(false);
@@ -27,6 +33,16 @@ const SettingsMenu = () => {
         navigation.navigate('Settings');
     }
 
+    const handleAddContact = () => {
+        handleDisplayMenu();
+
+        if (chatRoomID === '') {
+            return;
+        }
+
+        navigation.navigate('Contacts', { chatRoomID: chatRoomID });
+    }
+
     //render() {
     return (
         <View style={styles.menu}>
@@ -36,8 +52,9 @@ const SettingsMenu = () => {
                     <MaterialCommunityIcons onPress={handleDisplayMenu} name="dots-vertical" size={24} color="white" />
                 }
             >
-                {<MenuItem onPress={handleNavigation}>Settings</MenuItem>}
-                {/* <MenuDivider /> */}
+                {displaySettings && <MenuItem onPress={handleNavigation}>Settings</MenuItem>}
+                <MenuDivider />
+                {displayAddContact && <MenuItem onPress={handleAddContact}>Add Contact to chat</MenuItem>}
             </Menu>
         </View >
     );
