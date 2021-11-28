@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
-import { User } from '../types';
+import { User, ChatRoom, ChatRoomUser } from '../types';
 import Avatar from './Avatar';
 
 import { Auth, API, graphqlOperation } from 'aws-amplify';
-import { createChatRoom, createChatRoomUser, updateChatRoom } from '../src/graphql/mutations'
+import { getChatRoom } from '../src/graphql/queries';
+import { createChatRoom, createChatRoomUser, updateChatRoom } from '../src/graphql/mutations';
 
 import { getUserChatRooms } from '../src/graphql/custom-queries';
 
@@ -43,11 +44,12 @@ const ContactListItem = (props: ContactListItemProps) => {
             //update chatroom
             await API.graphql(graphqlOperation(updateChatRoom, {
                 input: {
-                    id: chatRoomID
+                    id: chatRoomID,
+                    isGroupChatRoom: true
                 }
             }));
 
-            navigation.navigate("ChatRoomScreen", { id: chatRoomID, name: 'group chat', imageUri: 'https://www.pngkit.com/png/full/44-443934_post-navigation-people-icon-grey.png' });
+            navigation.navigate("ChatRoomScreen", { id: chatRoomID, name: 'group chat', imageUri: '' });
         } catch (error) {
             console.log(error);
         }
@@ -58,22 +60,30 @@ const ContactListItem = (props: ContactListItemProps) => {
             //setup chatroom, add user-prop and current auth user
             const currentUser = await Auth.currentAuthenticatedUser();
 
-            //all chatRoom for current authenticated user
-            const currentUserChats = await API.graphql(graphqlOperation(getUserChatRooms, { id: currentUser.attributes.sub }));
-            const userChats = currentUserChats.data.getUser.chatRoomUsers.items;
+            //all chatRoom for current authenticated user and selected recipient
+            const currentUserChatsData = await API.graphql(graphqlOperation(getUserChatRooms, { id: currentUser.attributes.sub }));
+            const recipientChatsData = await API.graphql(graphqlOperation(getUserChatRooms, { id: user.id }));
 
-            //find chatRoom between current and selected users
-            let existingChat = userChats.find(chats => chats.chatRoom.chatRoomUser.items[0].userID === user.id && chats.chatRoom.chatRoomUser.items < 3);
-            if (!existingChat) {
-                existingChat = userChats.find(chats => chats.chatRoom.chatRoomUser.items[1].userID === user.id && chats.chatRoom.chatRoomUser.items < 3);
-            }
+            const currentUserChats: Array<string> = currentUserChatsData.data.getUser.chatRoomUsers.items.map((item: ChatRoomUser) => (
+                item.chatRoom.id
+            ));
+
+            const recipientChats: Array<string> = recipientChatsData.data.getUser.chatRoomUsers.items.map((item: ChatRoomUser) => (
+                item.chatRoom.id
+            ));
+
+            const existingChats = currentUserChats.filter((chatRoomId) => recipientChats.includes(chatRoomId));
 
             let chatRoom = null;
 
+
             //if chat room between current user and selected user is found
-            if (existingChat && existingChat.chatRoom) {
-                chatRoom = existingChat.chatRoom;
-            } else {
+            if (existingChats && existingChats.length > 0) {
+                console.log(existingChats)
+                const chatRoomData = await API.graphql(graphqlOperation(getChatRoom, { id: existingChats[0] }));
+                chatRoom = chatRoomData.data.getChatRoom;
+            }
+            else {
 
                 //otherwise create a new chatroom between current authenticated and selected user
                 console.log('no conversation exists between current and selected users');

@@ -70,7 +70,11 @@ const RootNavigator = () => {
                             }>
                                 <Feather name="chevron-left" size={34} color="white" />
                             </TouchableOpacity>
-                            <Avatar uri={route.params.imageUri} size={40} />
+                            {
+                                route.params.imageUri === '' ? <Ionicons name="ios-people-circle-outline" size={36} color="grey" /> : <Avatar uri={route.params.imageUri} size={40} />
+                            }
+
+
                         </View>
                     ),
                     headerRight: () => (

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, Button, Platform, StyleSheet, SafeAreaView, Image, TouchableOpacity } from 'react-native';
 import Amplify, { Auth, Hub, graphqlOperation, API } from 'aws-amplify';
 import * as WebBrowser from 'expo-web-browser'
-import awsconfig from './aws-exports';
+import awsconfig from './src/aws-exports';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { withOAuth, withAuthenticator } from "aws-amplify-react-native";
 import * as Linking from 'expo-linking'

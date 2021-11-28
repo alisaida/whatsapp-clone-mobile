@@ -10,8 +10,6 @@ import { onCreateMessage } from '../src/graphql/subscriptions'
 
 import { timeAgo } from '../DateUtil/DateUtil';
 import { Ionicons } from '@expo/vector-icons';
-
-
 export type ChatListItemProps = {
     chatRoom: ChatRoom;
 }
@@ -22,11 +20,8 @@ const ChatListItem = (props: ChatListItemProps) => {
 
     const { chatRoom } = props;
 
-    // console.log(chatRoom)
-
     const navigation = useNavigation();
 
-    // const user = (chatRoom as any).chatRoomUser[0];
     const [recipient, setRecipient] = useState(null);
     const [lastMessage, setLastMessage] = useState(null);
     const [currentUser, setcurrentUser] = useState(null);
@@ -36,15 +31,15 @@ const ChatListItem = (props: ChatListItemProps) => {
             const currentUser = await Auth.currentAuthenticatedUser();
             setcurrentUser(currentUser);
 
-            if (chatRoom.chatRoomUser.length === 2) {
-                const currentUserID = currentUser.attributes.sub
-                loadUserDetails(currentUserID);
-            } else {
+            if (chatRoom.isGroupChatRoom) {
                 const recipientData = {
-                    imageUri: 'https://www.pngkit.com/png/full/44-443934_post-navigation-people-icon-grey.png',
+                    imageUri: '',
                     name: 'group chat',
                 };
                 setRecipient(recipientData);
+            } else {
+                const currentUserID = currentUser.attributes.sub
+                loadUserDetails(currentUserID);
             }
         }
         getRecipient();
@@ -131,6 +126,20 @@ const ChatListItem = (props: ChatListItemProps) => {
     if (!lastMessage) {
         return null;
     }
+
+    const recipientIcon = () => {
+        if (chatRoom.isGroupChatRoom) {
+            // if (chatRoom.imageUri !== '') {}
+            return <Ionicons name="md-people-sharp" size={32} color="grey" />
+        }
+        else if (!recipient.imageUri) {
+            return <Ionicons name="person" size={32} color="grey" />
+        }
+        else {
+            return <Avatar uri={recipient.imageUri} size={50} />
+        }
+    }
+
     const lastMessageDisplay = () => {
         if (lastMessage) {
             if (lastMessage.imageUri) {
@@ -148,7 +157,10 @@ const ChatListItem = (props: ChatListItemProps) => {
     return (
         <TouchableOpacity style={styles.container} onPress={onPress}>
             <View style={styles.leftContainer}>
-                <Avatar uri={recipient.imageUri} size={50} />
+                {
+                    recipientIcon()
+                }
+
                 <View style={styles.midContainer}>
                     <Text style={styles.recipientName}>{recipient.name}</Text>
                     <View style={styles.lastMessageContainer}>

@@ -55,6 +55,8 @@ export type ChatRoom = {
   lastMessageID: string;
   lastMessage: Message;
   updatedAt: string;
+  chatRoomName: string;
+  isGroupChatRoom: boolean;
 }
 
 export type ChatRoomUser = {

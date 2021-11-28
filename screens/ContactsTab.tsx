@@ -32,8 +32,10 @@ const ContactsTab = () => {
   const fetchContactsForNewChat = async () => {
     try {
       const currentUser = await Auth.currentAuthenticatedUser();
-      const list = await API.graphql(graphqlOperation(listUsers, { id: currentUser.attributes.sub }));
-      const contacts = list.data.listUsers.items;
+      const list = await API.graphql(graphqlOperation(listAllUsers, {}));
+      const allContacts = list.data.listUsers.items;
+      const contacts = allContacts.filter((user) => user.id !== currentUser.attributes.sub);
+
       if (contacts) {
         setContacts(contacts);
       }
